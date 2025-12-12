@@ -1,0 +1,40 @@
+﻿<Window x:Class="EgeGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Генератор вариантов ЕГЭ" 
+        Height="450" 
+        Width="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Кнопка запуска -->
+        <Button x:Name="btnGenerate" 
+                Content="СГЕНЕРИРОВАТЬ ВАРИАНТЫ" 
+                Height="60" 
+                FontSize="18" 
+                FontWeight="Bold"
+                Background="#2196F3" 
+                Foreground="White"
+                BorderThickness="0"
+                Click="BtnGenerate_Click"/>
+
+        <!-- Статус -->
+        <Border Grid.Row="1" 
+                BorderBrush="#CCCCCC" 
+                BorderThickness="0,1,0,0"
+                Margin="0,20,0,0"
+                Padding="0,20,0,0">
+            <TextBlock x:Name="txtStatus" 
+                       Text="Нажмите кнопку для генерации вариантов" 
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>
