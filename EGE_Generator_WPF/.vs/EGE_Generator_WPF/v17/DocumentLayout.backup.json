@@ -1,0 +1,83 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|c:\\users\\femto\\source\\repos\\ege_generator_wpf\\ege_generator_wpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|solutionrelative:ege_generator_wpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\ege_generator_wpf\\inputdialog.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|solutionrelative:ege_generator_wpf\\inputdialog.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\ege_generator_wpf\\inputdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|solutionrelative:ege_generator_wpf\\inputdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\ege_generator_wpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E7915F35-1588-4FF3-9B62-56BA90EC4C65}|EGE_Generator_WPF\\EGE_Generator_WPF.csproj|solutionrelative:ege_generator_wpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "InputDialog.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\InputDialog.xaml.cs",
+              "RelativeDocumentMoniker": "EGE_Generator_WPF\\InputDialog.xaml.cs",
+              "ToolTip": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\InputDialog.xaml.cs",
+              "RelativeToolTip": "EGE_Generator_WPF\\InputDialog.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAiwBUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-10T21:59:40.839Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "InputDialog.xaml",
+              "DocumentMoniker": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\InputDialog.xaml",
+              "RelativeDocumentMoniker": "EGE_Generator_WPF\\InputDialog.xaml",
+              "ToolTip": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\InputDialog.xaml",
+              "RelativeToolTip": "EGE_Generator_WPF\\InputDialog.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-12-10T21:55:29.04Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "EGE_Generator_WPF\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\MainWindow.xaml",
+              "RelativeToolTip": "EGE_Generator_WPF\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-12-10T18:51:58.653Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "EGE_Generator_WPF\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\femto\\source\\repos\\EGE_Generator_WPF\\EGE_Generator_WPF\\MainWindow.xaml.cs",
+              "RelativeToolTip": "EGE_Generator_WPF\\MainWindow.xaml.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAMwG4AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-10T18:51:56.49Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
