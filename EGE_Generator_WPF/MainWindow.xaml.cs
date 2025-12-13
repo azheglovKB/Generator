@@ -17,7 +17,7 @@ namespace EgeGenerator
         {
             try
             {
-                // 1. Выбираем папку хранилища
+                // 1. Выбираем папку хранилища "sanya loh"
                 string storagePath = SelectFolder("Выберите папку хранилища с заданиями");
                 if (string.IsNullOrEmpty(storagePath))
                     return;
