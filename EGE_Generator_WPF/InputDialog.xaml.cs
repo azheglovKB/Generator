@@ -6,10 +6,11 @@ namespace EgeGenerator
     {
         public string Answer { get; private set; }
 
-        public InputDialog(string title, string question)
+        public InputDialog(string title)
         {
             InitializeComponent();
             Title = title;
+            Answer = "";
             txtInput.Focus();
         }
 

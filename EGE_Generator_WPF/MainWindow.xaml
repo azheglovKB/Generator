@@ -12,7 +12,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Кнопка запуска -->
         <Button x:Name="btnGenerate" 
                 Content="СГЕНЕРИРОВАТЬ ВАРИАНТЫ" 
                 Height="60" 
@@ -23,7 +22,6 @@
                 BorderThickness="0"
                 Click="BtnGenerate_Click"/>
 
-        <!-- Статус -->
         <Border Grid.Row="1" 
                 BorderBrush="#CCCCCC" 
                 BorderThickness="0,1,0,0"

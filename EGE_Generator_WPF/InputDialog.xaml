@@ -15,8 +15,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" 
-                   Text="Сколько вариантов хотите сгенерировать?" 
+        <TextBlock Text="Сколько вариантов хотите сгенерировать?" 
                    FontSize="16"
                    Margin="0,0,0,15"/>
 
