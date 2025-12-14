@@ -1,0 +1,100 @@
+﻿<Window x:Class="EgeGenerator.AddVariantDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавление варианта задания" 
+        Height="550" 
+        Width="500"
+        MinHeight="550"
+        MinWidth="450"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+
+            <!-- Заголовок -->
+            <TextBlock x:Name="txtTitle" 
+                       Text="Добавление варианта задания" 
+                       FontSize="18" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- Задание -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="Задание (png или jpg):" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnBrowseTask" Content="Загрузить задание" Width="150" Height="30" 
+                                Click="BtnBrowseTask_Click" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="txtTaskFile" Text="Не загружено" VerticalAlignment="Center" Foreground="#666666"/>
+                        <TextBlock x:Name="txtTaskCheck" Text="✗" Foreground="Red" FontWeight="Bold" 
+                                   Margin="10,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Ответ -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="Ответ:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button x:Name="btnBrowseAnswer" Content="Загрузить ответ (txt)" Width="150" Height="30" 
+                                Click="BtnBrowseAnswer_Click" Margin="0,0,10,0"/>
+                        <TextBlock Text="или введите вручную:" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBox x:Name="txtAnswer" Height="80" TextWrapping="Wrap" 
+                             AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Доп. материал A -->
+            <Border x:Name="borderExtraA" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" 
+                    Margin="0,0,0,10" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="Дополнительный материал A:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnBrowseExtraA" Content="Загрузить доп. материал" Width="150" Height="30" 
+                                Click="BtnBrowseExtraA_Click" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="txtExtraAFile" Text="Не загружено" VerticalAlignment="Center" Foreground="#666666"/>
+                        <TextBlock x:Name="txtExtraACheck" Text="✗" Foreground="Red" FontWeight="Bold" 
+                                   Margin="10,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    </StackPanel>
+                    <TextBlock Text="Допустимые форматы: .txt, .ods, .xlsx, .xls, .pdf, .doc, .docx" 
+                               FontSize="10" Foreground="#666666" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Доп. материал B -->
+            <Border x:Name="borderExtraB" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" 
+                    Margin="0,0,0,10" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="Дополнительный материал B:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnBrowseExtraB" Content="Загрузить доп. материал B" Width="150" Height="30" 
+                                Click="BtnBrowseExtraB_Click" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="txtExtraBFile" Text="Не загружено" VerticalAlignment="Center" Foreground="#666666"/>
+                        <TextBlock x:Name="txtExtraBCheck" Text="✗" Foreground="Red" FontWeight="Bold" 
+                                   Margin="10,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    </StackPanel>
+                    <TextBlock Text="Допустимые форматы: .txt, .ods, .xlsx, .xls, .pdf, .doc, .docx" 
+                               FontSize="10" Foreground="#666666" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Информация -->
+            <Border Background="#E3F2FD" BorderBrush="#90CAF9" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <TextBlock x:Name="txtVariantInfo" Text="Будет создан вариант № ?" FontWeight="SemiBold"/>
+            </Border>
+
+            <!-- Кнопки -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="Сохранить" Width="100" Height="35" Background="#4CAF50" Foreground="White"
+                        FontWeight="Bold" IsDefault="True" Click="BtnSave_Click"/>
+                <Button Content="Отмена" Width="100" Height="35" Background="#F44336" Foreground="White"
+                        FontWeight="Bold" Margin="10,0,0,0" IsCancel="True"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>

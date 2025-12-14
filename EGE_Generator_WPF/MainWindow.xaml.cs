@@ -13,6 +13,141 @@ namespace EgeGenerator
             InitializeComponent();
         }
 
+        private void BtnAddTask_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // 1. Выбираем или создаём папку хранилища
+                string storagePath = GetOrCreateStorageForAdding();
+                if (string.IsNullOrEmpty(storagePath))
+                    return;
+
+                // 2. Открываем окно ввода номера задания
+                var taskNumberDialog = new TaskNumberDialog();
+                if (taskNumberDialog.ShowDialog() == true)
+                {
+                    int taskNumber = taskNumberDialog.TaskNumber;
+
+                    // 3. Открываем окно добавления варианта
+                    var addVariantDialog = new AddVariantDialog(taskNumber, storagePath);
+                    if (addVariantDialog.ShowDialog() == true)
+                    {
+                        MessageBox.Show($"Успешно добавлен вариант {addVariantDialog.VariantNumber} для задания {taskNumber}!",
+                            "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        txtStatus.Text = $"Добавлен вариант для задания {taskNumber}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}\n\nПовторите попытку.",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string GetOrCreateStorageForAdding()
+        {
+            // Сначала пробуем выбрать существующую папку хранилища
+            string storagePath = SelectFolder("Выберите папку хранилища с заданиями");
+
+            if (string.IsNullOrEmpty(storagePath))
+                return "";
+
+            // Если папка существует, проверяем структуру
+            if (Directory.Exists(storagePath))
+            {
+                // Проверяем есть ли хоть какие-то папки заданий
+                bool hasAnyTaskFolders = false;
+                for (int i = 1; i <= 27; i++)
+                {
+                    string taskFolder = Path.Combine(storagePath, i.ToString());
+                    if (Directory.Exists(taskFolder))
+                    {
+                        hasAnyTaskFolders = true;
+                        break;
+                    }
+                }
+
+                // Если нет ни одной папки задания, спрашиваем создать ли
+                if (!hasAnyTaskFolders)
+                {
+                    var result = MessageBox.Show("В выбранной папке нет заданий. Создать 27 папок для заданий?",
+                        "Создание структуры", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        CreateAllTaskFolders(storagePath);
+                        MessageBox.Show("Созданы 27 папок для заданий. Теперь можно добавлять варианты.",
+                            "Структура создана", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+            }
+            else
+            {
+                // Если папки не существует, спрашиваем создать ли
+                var result = MessageBox.Show($"Папка не существует. Создать папку хранилища и 27 папок для заданий?\n\n{storagePath}",
+                    "Создание хранилища", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(storagePath);
+                        CreateAllTaskFolders(storagePath);
+
+                        MessageBox.Show($"Создано хранилище и 27 папок для заданий.\n\n{storagePath}",
+                            "Хранилище создано", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось создать папку: {ex.Message}",
+                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return "";
+                    }
+                }
+                else
+                {
+                    return "";
+                }
+            }
+
+            return storagePath;
+        }
+
+        private void CreateAllTaskFolders(string storagePath)
+        {
+            List<int> createdFolders = new List<int>();
+
+            for (int taskNum = 1; taskNum <= 27; taskNum++)
+            {
+                string taskFolderPath = Path.Combine(storagePath, taskNum.ToString());
+
+                if (!Directory.Exists(taskFolderPath))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(taskFolderPath);
+                        createdFolders.Add(taskNum);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось создать папку для задания {taskNum}: {ex.Message}",
+                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
+
+            if (createdFolders.Count > 0)
+            {
+                Console.WriteLine($"Созданы папки: {string.Join(", ", createdFolders)}");
+            }
+        }
+
         private void BtnGenerate_Click(object sender, RoutedEventArgs e)
         {
             try
