@@ -34,8 +34,6 @@ namespace EgeGenerator
                     {
                         MessageBox.Show($"Успешно добавлен вариант {addVariantDialog.VariantNumber} для задания {taskNumber}!",
                             "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        txtStatus.Text = $"Добавлен вариант для задания {taskNumber}";
                     }
                 }
             }
@@ -224,15 +222,11 @@ namespace EgeGenerator
                 // 6. Уведомляем об успехе
                 MessageBox.Show($"Успешно создано {variantCount} вариантов!\n\nПапка: {outputPath}",
                     "Генерация завершена", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                txtStatus.Text = $"Готово! Создано {variantCount} вариантов";
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка: {ex.Message}\n\nИсправьте ошибку и попробуйте снова.",
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                txtStatus.Text = "Ошибка при выполнении";
             }
         }
 
@@ -260,8 +254,6 @@ namespace EgeGenerator
 
         private void ValidateStorage(string storagePath)
         {
-            txtStatus.Text = "Проверка хранилища...";
-
             // Задания с доп. материалами
             var tasksWithOneExtra = new HashSet<int> { 3, 9, 10, 17, 18, 22, 24, 26 }; // 26 - 1 доп.
             var tasksWithTwoExtra = new HashSet<int> { 27 }; // 27 - 2 доп.
@@ -301,8 +293,6 @@ namespace EgeGenerator
                     ValidateVariant(variantFolder, taskNum, tasksWithOneExtra, tasksWithTwoExtra);
                 }
             }
-
-            txtStatus.Text = "Хранилище проверено успешно!";
         }
 
         private void ValidateStorage1921(string storagePath)
@@ -486,8 +476,6 @@ namespace EgeGenerator
 
         private void GenerateVariants(string storagePath, string outputPath, int variantCount)
         {
-            txtStatus.Text = "Генерация вариантов...";
-
             Random random = new Random();
 
             // Создаем основную папку для вариантов
@@ -498,8 +486,6 @@ namespace EgeGenerator
             {
                 GenerateSingleVariant(storagePath, variantsFolder, variantNum, random);
             }
-
-            txtStatus.Text = $"Готово! Создано {variantCount} вариантов";
         }
 
         private void GenerateSingleVariant(string storagePath, string variantsFolder, int variantNum, Random random)

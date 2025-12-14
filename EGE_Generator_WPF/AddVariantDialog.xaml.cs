@@ -21,6 +21,7 @@ namespace EgeGenerator
         private static readonly HashSet<int> _tasksWithOneExtra = new HashSet<int> { 3, 9, 10, 17, 18, 22, 24, 26 };
         private static readonly HashSet<int> _tasksWithTwoExtra = new HashSet<int> { 27 };
         private static readonly string[] _allowedExtraExtensions = { ".txt", ".ods", ".xlsx", ".xls", ".pdf", ".doc", ".docx" };
+
         private const string PAPKA_1921 = "19-21";
 
         public int VariantNumber { get; private set; }
@@ -45,11 +46,18 @@ namespace EgeGenerator
         private void InitializeUI()
         {
             // Для заданий 19-21 - особый случай
-            if (_taskNumber == 19 || _taskNumber == 20 || _taskNumber == 21)
+            if (_taskNumber >= 19 && _taskNumber <= 21)
             {
-                txtTitle.Text = $"Добавление варианта для заданий 19-21";
+                txtTitle.Text = $"Добавление задания {_taskNumber} (входит в блок 19-21)";
+
+                // Скрываем поля для доп. материалов
+                borderExtraA.Visibility = Visibility.Collapsed;
+                borderExtraB.Visibility = Visibility.Collapsed;
+
                 MessageBox.Show("Внимание! Для заданий 19-21 нужно добавить сразу три задания (19, 20, 21).\n\n" +
-                               "В выбранном варианте будут созданы 3 папки.",
+                               "1. Сначала добавьте текущее задание\n" +
+                               "2. Затем добавьте остальные задания, выбрав тот же номер варианта\n" +
+                               "3. Все три задания должны быть в одном варианте",
                                "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -261,6 +269,49 @@ namespace EgeGenerator
 
         private bool ValidateInput()
         {
+            // Для заданий 19-21 не проверяем доп. материалы
+            if (_taskNumber >= 19 && _taskNumber <= 21)
+            {
+                return ValidateInputFor1921();
+            }
+            else
+            {
+                return ValidateInputForRegularTask();
+            }
+        }
+
+        private bool ValidateInputFor1921()
+        {
+            // Проверяем задание
+            if (string.IsNullOrEmpty(_taskFilePath))
+            {
+                MessageBox.Show("Загрузите файл задания (png или jpg)",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            string taskExtension = Path.GetExtension(_taskFilePath).ToLower();
+            if (taskExtension != ".png" && taskExtension != ".jpg" && taskExtension != ".jpeg")
+            {
+                MessageBox.Show("Файл задания должен быть в формате png или jpg",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            // Проверяем ответ
+            string answerText = txtAnswer.Text.Trim();
+            if (string.IsNullOrEmpty(answerText))
+            {
+                MessageBox.Show("Введите ответ вручную или загрузите файл с ответом",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateInputForRegularTask()
+        {
             // Проверяем задание
             if (string.IsNullOrEmpty(_taskFilePath))
             {
@@ -341,17 +392,37 @@ namespace EgeGenerator
                 Directory.CreateDirectory(task1921FolderPath);
             }
 
-            // Создаем папку варианта
+            // Проверяем существует ли уже вариант
             string variantFolderPath = Path.Combine(task1921FolderPath, VariantNumber.ToString());
-            Directory.CreateDirectory(variantFolderPath);
+            bool variantExists = Directory.Exists(variantFolderPath);
 
-            MessageBox.Show($"Для заданий 19-21 необходимо добавить файлы для всех трёх заданий (19, 20, 21).\n\n" +
-                           $"Сначала добавьте задание {_taskNumber}, затем добавьте остальные.",
-                           "Добавление заданий 19-21", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (!variantExists)
+            {
+                // Создаем папку варианта
+                Directory.CreateDirectory(variantFolderPath);
 
-            // Создаем папку для текущего задания
+                // Создаем все 3 папки заданий внутри варианта
+                for (int taskNum = 19; taskNum <= 21; taskNum++)
+                {
+                    string taskFolderPath = Path.Combine(variantFolderPath, taskNum.ToString());
+                    Directory.CreateDirectory(taskFolderPath);
+                }
+            }
+            else
+            {
+                // Проверяем, есть ли все 3 папки заданий
+                for (int taskNum = 19; taskNum <= 21; taskNum++)
+                {
+                    string taskFolderPath = Path.Combine(variantFolderPath, taskNum.ToString());
+                    if (!Directory.Exists(taskFolderPath))
+                    {
+                        Directory.CreateDirectory(taskFolderPath);
+                    }
+                }
+            }
+
+            // Копируем файлы в папку текущего задания
             string currentTaskFolderPath = Path.Combine(variantFolderPath, _taskNumber.ToString());
-            Directory.CreateDirectory(currentTaskFolderPath);
 
             // Копируем файл задания с переименованием
             string taskDestPath = Path.Combine(currentTaskFolderPath, "task" + Path.GetExtension(_taskFilePath));
@@ -360,6 +431,49 @@ namespace EgeGenerator
             // Сохраняем ответ
             string answerDestPath = Path.Combine(currentTaskFolderPath, "answer.txt");
             File.WriteAllText(answerDestPath, txtAnswer.Text.Trim());
+
+            // Проверяем, заполнены ли все 3 задания
+            CheckIfAllTasks1921Filled(variantFolderPath);
+        }
+
+        private void CheckIfAllTasks1921Filled(string variantFolderPath)
+        {
+            bool allFilled = true;
+            List<int> missingTasks = new List<int>();
+
+            for (int taskNum = 19; taskNum <= 21; taskNum++)
+            {
+                string taskFolderPath = Path.Combine(variantFolderPath, taskNum.ToString());
+                string[] files = Directory.GetFiles(taskFolderPath);
+
+                bool hasTaskFile = files.Any(f =>
+                    Path.GetFileNameWithoutExtension(f).Equals("task", StringComparison.OrdinalIgnoreCase) &&
+                    (f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                     f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)));
+
+                bool hasAnswerFile = files.Any(f =>
+                    Path.GetFileNameWithoutExtension(f).Equals("answer", StringComparison.OrdinalIgnoreCase) &&
+                    f.EndsWith(".txt", StringComparison.OrdinalIgnoreCase));
+
+                if (!hasTaskFile || !hasAnswerFile)
+                {
+                    allFilled = false;
+                    missingTasks.Add(taskNum);
+                }
+            }
+
+            if (!allFilled)
+            {
+                MessageBox.Show($"Добавлено задание {_taskNumber}.\n\n" +
+                               $"Осталось добавить задания: {string.Join(", ", missingTasks)}\n\n" +
+                               $"При добавлении следующих заданий выберите тот же вариант номер {VariantNumber}.",
+                               "Задания 19-21", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show($"Все 3 задания (19, 20, 21) добавлены в вариант {VariantNumber}!",
+                               "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void SaveRegularTask()
@@ -397,6 +511,5 @@ namespace EgeGenerator
                 File.Copy(_extraBFilePath, extraBDestPath, true);
             }
         }
-
     }
 }
