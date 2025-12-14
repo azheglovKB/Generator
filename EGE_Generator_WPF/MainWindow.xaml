@@ -27,7 +27,7 @@
                     Margin="0,0,10,0"/>
 
             <Button x:Name="btnAddTask" 
-                    Content="➕ ДОБАВИТЬ ЗАДАНИЕ" 
+                    Content="ДОБАВИТЬ ЗАДАНИЕ" 
                     Height="60" 
                     FontSize="16" 
                     FontWeight="Bold"
@@ -49,23 +49,6 @@
                        FontSize="14"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
-        </Border>
-
-        <!-- Информация -->
-        <Border Grid.Row="2" 
-                Background="#F5F5F5" 
-                BorderBrush="#CCCCCC" 
-                BorderThickness="1"
-                Padding="15">
-            <TextBlock TextWrapping="Wrap" FontSize="12">
-                <Bold>Информация:</Bold>
-                <LineBreak/>
-                • Для генерации вариантов нажмите "СГЕНЕРИРОВАТЬ ВАРИАНТЫ"
-                <LineBreak/>
-                • Для добавления нового задания нажмите "ДОБАВИТЬ ЗАДАНИЕ"
-                <LineBreak/>
-                • Задания с доп. материалами: 3,9,10,17,18,22,24,26 (1 доп. файл), 27 (2 доп. файла)
-            </TextBlock>
         </Border>
     </Grid>
 </Window>

@@ -21,6 +21,7 @@ namespace EgeGenerator
         private static readonly HashSet<int> _tasksWithOneExtra = new HashSet<int> { 3, 9, 10, 17, 18, 22, 24, 26 };
         private static readonly HashSet<int> _tasksWithTwoExtra = new HashSet<int> { 27 };
         private static readonly string[] _allowedExtraExtensions = { ".txt", ".ods", ".xlsx", ".xls", ".pdf", ".doc", ".docx" };
+        private const string PAPKA_1921 = "19-21";
 
         public int VariantNumber { get; private set; }
 
@@ -43,34 +44,55 @@ namespace EgeGenerator
 
         private void InitializeUI()
         {
-            txtTitle.Text = $"Добавление варианта задания {_taskNumber}";
-
-            // Показываем нужные поля в зависимости от типа задания
-            if (_tasksWithOneExtra.Contains(_taskNumber))
+            // Для заданий 19-21 - особый случай
+            if (_taskNumber == 19 || _taskNumber == 20 || _taskNumber == 21)
             {
-                borderExtraA.Visibility = Visibility.Visible;
-                borderExtraB.Visibility = Visibility.Collapsed;
-            }
-            else if (_tasksWithTwoExtra.Contains(_taskNumber))
-            {
-                borderExtraA.Visibility = Visibility.Visible;
-                borderExtraB.Visibility = Visibility.Visible;
+                txtTitle.Text = $"Добавление варианта для заданий 19-21";
+                MessageBox.Show("Внимание! Для заданий 19-21 нужно добавить сразу три задания (19, 20, 21).\n\n" +
+                               "В выбранном варианте будут созданы 3 папки.",
+                               "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                borderExtraA.Visibility = Visibility.Collapsed;
-                borderExtraB.Visibility = Visibility.Collapsed;
+                txtTitle.Text = $"Добавление варианта задания {_taskNumber}";
+
+                // Показываем нужные поля в зависимости от типа задания
+                if (_tasksWithOneExtra.Contains(_taskNumber))
+                {
+                    borderExtraA.Visibility = Visibility.Visible;
+                    borderExtraB.Visibility = Visibility.Collapsed;
+                }
+                else if (_tasksWithTwoExtra.Contains(_taskNumber))
+                {
+                    borderExtraA.Visibility = Visibility.Visible;
+                    borderExtraB.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    borderExtraA.Visibility = Visibility.Collapsed;
+                    borderExtraB.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
         private void UpdateVariantNumber()
         {
-            string taskFolderPath = Path.Combine(_storagePath, _taskNumber.ToString());
+            string taskFolderPath;
+
+            // Для заданий 19-21 используем папку 19-21
+            if (_taskNumber >= 19 && _taskNumber <= 21)
+            {
+                taskFolderPath = Path.Combine(_storagePath, PAPKA_1921);
+            }
+            else
+            {
+                taskFolderPath = Path.Combine(_storagePath, _taskNumber.ToString());
+            }
 
             if (!Directory.Exists(taskFolderPath))
             {
                 VariantNumber = 1;
-                txtVariantInfo.Text = $"Будет создан вариант № {VariantNumber} (новая папка задания)";
+                txtVariantInfo.Text = $"Будет создан вариант № {VariantNumber} (новая папка)";
                 return;
             }
 
@@ -88,7 +110,7 @@ namespace EgeGenerator
             }
 
             // Ищем минимальный пропущенный номер
-            for (int i = 1; i <= 1000; i++) // Ограничим 1000 вариантов
+            for (int i = 1; i <= 1000; i++)
             {
                 if (!existingNumbers.Contains(i))
                 {
@@ -98,7 +120,6 @@ namespace EgeGenerator
                 }
             }
 
-            // Если все номера до 1000 заняты, берём следующий
             VariantNumber = existingNumbers.Max() + 1;
             txtVariantInfo.Text = $"Будет создан вариант № {VariantNumber}";
         }
@@ -292,37 +313,14 @@ namespace EgeGenerator
 
             try
             {
-                // Создаем папку задания если её нет
-                string taskFolderPath = Path.Combine(_storagePath, _taskNumber.ToString());
-                if (!Directory.Exists(taskFolderPath))
+                // Для заданий 19-21 - особый случай
+                if (_taskNumber >= 19 && _taskNumber <= 21)
                 {
-                    Directory.CreateDirectory(taskFolderPath);
+                    SaveTask1921();
                 }
-
-                // Создаем папку варианта
-                string variantFolderPath = Path.Combine(taskFolderPath, VariantNumber.ToString());
-                Directory.CreateDirectory(variantFolderPath);
-
-                // Копируем файл задания с переименованием
-                string taskDestPath = Path.Combine(variantFolderPath, "task" + Path.GetExtension(_taskFilePath));
-                File.Copy(_taskFilePath, taskDestPath, true);
-
-                // Сохраняем ответ
-                string answerDestPath = Path.Combine(variantFolderPath, "answer.txt");
-                File.WriteAllText(answerDestPath, txtAnswer.Text.Trim());
-
-                // Копируем доп. материал A если есть
-                if (!string.IsNullOrEmpty(_extraAFilePath))
+                else
                 {
-                    string extraADestPath = Path.Combine(variantFolderPath, "A" + Path.GetExtension(_extraAFilePath));
-                    File.Copy(_extraAFilePath, extraADestPath, true);
-                }
-
-                // Копируем доп. материал B если есть
-                if (!string.IsNullOrEmpty(_extraBFilePath))
-                {
-                    string extraBDestPath = Path.Combine(variantFolderPath, "B" + Path.GetExtension(_extraBFilePath));
-                    File.Copy(_extraBFilePath, extraBDestPath, true);
+                    SaveRegularTask();
                 }
 
                 DialogResult = true;
@@ -333,5 +331,72 @@ namespace EgeGenerator
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void SaveTask1921()
+        {
+            // Создаем папку 19-21 если её нет
+            string task1921FolderPath = Path.Combine(_storagePath, PAPKA_1921);
+            if (!Directory.Exists(task1921FolderPath))
+            {
+                Directory.CreateDirectory(task1921FolderPath);
+            }
+
+            // Создаем папку варианта
+            string variantFolderPath = Path.Combine(task1921FolderPath, VariantNumber.ToString());
+            Directory.CreateDirectory(variantFolderPath);
+
+            MessageBox.Show($"Для заданий 19-21 необходимо добавить файлы для всех трёх заданий (19, 20, 21).\n\n" +
+                           $"Сначала добавьте задание {_taskNumber}, затем добавьте остальные.",
+                           "Добавление заданий 19-21", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // Создаем папку для текущего задания
+            string currentTaskFolderPath = Path.Combine(variantFolderPath, _taskNumber.ToString());
+            Directory.CreateDirectory(currentTaskFolderPath);
+
+            // Копируем файл задания с переименованием
+            string taskDestPath = Path.Combine(currentTaskFolderPath, "task" + Path.GetExtension(_taskFilePath));
+            File.Copy(_taskFilePath, taskDestPath, true);
+
+            // Сохраняем ответ
+            string answerDestPath = Path.Combine(currentTaskFolderPath, "answer.txt");
+            File.WriteAllText(answerDestPath, txtAnswer.Text.Trim());
+        }
+
+        private void SaveRegularTask()
+        {
+            // Создаем папку задания если её нет
+            string taskFolderPath = Path.Combine(_storagePath, _taskNumber.ToString());
+            if (!Directory.Exists(taskFolderPath))
+            {
+                Directory.CreateDirectory(taskFolderPath);
+            }
+
+            // Создаем папку варианта
+            string variantFolderPath = Path.Combine(taskFolderPath, VariantNumber.ToString());
+            Directory.CreateDirectory(variantFolderPath);
+
+            // Копируем файл задания с переименованием
+            string taskDestPath = Path.Combine(variantFolderPath, "task" + Path.GetExtension(_taskFilePath));
+            File.Copy(_taskFilePath, taskDestPath, true);
+
+            // Сохраняем ответ
+            string answerDestPath = Path.Combine(variantFolderPath, "answer.txt");
+            File.WriteAllText(answerDestPath, txtAnswer.Text.Trim());
+
+            // Копируем доп. материал A если есть
+            if (!string.IsNullOrEmpty(_extraAFilePath))
+            {
+                string extraADestPath = Path.Combine(variantFolderPath, "A" + Path.GetExtension(_extraAFilePath));
+                File.Copy(_extraAFilePath, extraADestPath, true);
+            }
+
+            // Копируем доп. материал B если есть
+            if (!string.IsNullOrEmpty(_extraBFilePath))
+            {
+                string extraBDestPath = Path.Combine(variantFolderPath, "B" + Path.GetExtension(_extraBFilePath));
+                File.Copy(_extraBFilePath, extraBDestPath, true);
+            }
+        }
+
     }
 }

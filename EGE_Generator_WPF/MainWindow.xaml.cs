@@ -59,8 +59,12 @@ namespace EgeGenerator
             {
                 // Проверяем есть ли хоть какие-то папки заданий
                 bool hasAnyTaskFolders = false;
+
+                // Проверяем папки 1-18, 19-21, 22-27
                 for (int i = 1; i <= 27; i++)
                 {
+                    if (i >= 19 && i <= 21) continue; // Пропускаем 19-21, будем проверять отдельно
+
                     string taskFolder = Path.Combine(storagePath, i.ToString());
                     if (Directory.Exists(taskFolder))
                     {
@@ -69,16 +73,23 @@ namespace EgeGenerator
                     }
                 }
 
+                // Проверяем папку 19-21
+                string task1921Folder = Path.Combine(storagePath, "19-21");
+                if (Directory.Exists(task1921Folder))
+                {
+                    hasAnyTaskFolders = true;
+                }
+
                 // Если нет ни одной папки задания, спрашиваем создать ли
                 if (!hasAnyTaskFolders)
                 {
-                    var result = MessageBox.Show("В выбранной папке нет заданий. Создать 27 папок для заданий?",
+                    var result = MessageBox.Show("В выбранной папке нет заданий. Создать папки для заданий?\n\n(26 папок: 1-18, 19-21, 22-27)",
                         "Создание структуры", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {
                         CreateAllTaskFolders(storagePath);
-                        MessageBox.Show("Созданы 27 папок для заданий. Теперь можно добавлять варианты.",
+                        MessageBox.Show("Созданы папки для заданий. Теперь можно добавлять варианты.",
                             "Структура создана", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
@@ -90,7 +101,7 @@ namespace EgeGenerator
             else
             {
                 // Если папки не существует, спрашиваем создать ли
-                var result = MessageBox.Show($"Папка не существует. Создать папку хранилища и 27 папок для заданий?\n\n{storagePath}",
+                var result = MessageBox.Show($"Папка не существует. Создать папку хранилища и папки для заданий?\n\n{storagePath}",
                     "Создание хранилища", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
@@ -100,7 +111,7 @@ namespace EgeGenerator
                         Directory.CreateDirectory(storagePath);
                         CreateAllTaskFolders(storagePath);
 
-                        MessageBox.Show($"Создано хранилище и 27 папок для заданий.\n\n{storagePath}",
+                        MessageBox.Show($"Создано хранилище и папки для заданий.\n\n{storagePath}",
                             "Хранилище создано", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
@@ -121,9 +132,10 @@ namespace EgeGenerator
 
         private void CreateAllTaskFolders(string storagePath)
         {
-            List<int> createdFolders = new List<int>();
+            List<string> createdFolders = new List<string>();
 
-            for (int taskNum = 1; taskNum <= 27; taskNum++)
+            // Создаем папки 1-18
+            for (int taskNum = 1; taskNum <= 18; taskNum++)
             {
                 string taskFolderPath = Path.Combine(storagePath, taskNum.ToString());
 
@@ -132,7 +144,43 @@ namespace EgeGenerator
                     try
                     {
                         Directory.CreateDirectory(taskFolderPath);
-                        createdFolders.Add(taskNum);
+                        createdFolders.Add(taskNum.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось создать папку для задания {taskNum}: {ex.Message}",
+                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
+
+            // Создаем папку 19-21
+            string task1921FolderPath = Path.Combine(storagePath, "19-21");
+            if (!Directory.Exists(task1921FolderPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(task1921FolderPath);
+                    createdFolders.Add("19-21");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Не удалось создать папку для заданий 19-21: {ex.Message}",
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+
+            // Создаем папки 22-27
+            for (int taskNum = 22; taskNum <= 27; taskNum++)
+            {
+                string taskFolderPath = Path.Combine(storagePath, taskNum.ToString());
+
+                if (!Directory.Exists(taskFolderPath))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(taskFolderPath);
+                        createdFolders.Add(taskNum.ToString());
                     }
                     catch (Exception ex)
                     {
@@ -152,7 +200,7 @@ namespace EgeGenerator
         {
             try
             {
-                // 1. Выбираем папку хранилища "sanya loh"
+                // 1. Выбираем папку хранилища
                 string storagePath = SelectFolder("Выберите папку хранилища с заданиями");
                 if (string.IsNullOrEmpty(storagePath))
                     return;
@@ -214,13 +262,24 @@ namespace EgeGenerator
         {
             txtStatus.Text = "Проверка хранилища...";
 
-            // ИСПРАВЛЕНО: 26 задание должно иметь 2 доп. материала
-            var tasksWithOneExtra = new HashSet<int> { 3, 9, 10, 17, 18, 22, 24, 26 };
-            var tasksWithTwoExtra = new HashSet<int> { 27 }; // 26 тоже 2 доп. материала
+            // Задания с доп. материалами
+            var tasksWithOneExtra = new HashSet<int> { 3, 9, 10, 17, 18, 22, 24, 26 }; // 26 - 1 доп.
+            var tasksWithTwoExtra = new HashSet<int> { 27 }; // 27 - 2 доп.
 
-            // Проверяем все 27 папок заданий
+            // Проверяем все папки заданий
             for (int taskNum = 1; taskNum <= 27; taskNum++)
             {
+                // Для заданий 19-21 - отдельная проверка
+                if (taskNum >= 19 && taskNum <= 21)
+                {
+                    // Проверяем только когда дошли до 19
+                    if (taskNum == 19)
+                    {
+                        ValidateStorage1921(storagePath);
+                    }
+                    continue;
+                }
+
                 string taskFolderPath = Path.Combine(storagePath, taskNum.ToString());
 
                 // 1. Проверяем наличие папки задания
@@ -244,6 +303,84 @@ namespace EgeGenerator
             }
 
             txtStatus.Text = "Хранилище проверено успешно!";
+        }
+
+        private void ValidateStorage1921(string storagePath)
+        {
+            string task1921FolderPath = Path.Combine(storagePath, "19-21");
+
+            // 1. Проверяем наличие папки 19-21
+            if (!Directory.Exists(task1921FolderPath))
+            {
+                throw new Exception($"Нет папки заданий 19-21");
+            }
+
+            // 2. Проверяем наличие вариантов в папке 19-21
+            string[] variantFolders = Directory.GetDirectories(task1921FolderPath);
+            if (variantFolders.Length == 0)
+            {
+                throw new Exception($"Нет вариантов в заданиях 19-21");
+            }
+
+            // 3. Проверяем каждый вариант
+            foreach (string variantFolder in variantFolders)
+            {
+                ValidateVariant1921(variantFolder);
+            }
+        }
+
+        private void ValidateVariant1921(string variantFolder)
+        {
+            string variantName = Path.GetFileName(variantFolder);
+
+            // Проверяем наличие папок 19, 20, 21 внутри варианта
+            for (int taskNum = 19; taskNum <= 21; taskNum++)
+            {
+                string taskFolder = Path.Combine(variantFolder, taskNum.ToString());
+
+                if (!Directory.Exists(taskFolder))
+                {
+                    throw new Exception($"В варианте {variantName} заданий 19-21 нет папки {taskNum}");
+                }
+
+                // Проверяем файлы в папке задания
+                string[] files = Directory.GetFiles(taskFolder);
+
+                // Ищем обязательные файлы
+                string taskFile = files.FirstOrDefault(f =>
+                    Path.GetFileNameWithoutExtension(f).Equals("task", StringComparison.OrdinalIgnoreCase) &&
+                    (f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                     f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)));
+
+                string answerFile = files.FirstOrDefault(f =>
+                    Path.GetFileNameWithoutExtension(f).Equals("answer", StringComparison.OrdinalIgnoreCase) &&
+                    f.EndsWith(".txt", StringComparison.OrdinalIgnoreCase));
+
+                // Проверяем наличие задания
+                if (taskFile == null)
+                {
+                    throw new Exception($"В задании {taskNum}, варианте {variantName} заданий 19-21 нет задания (task.png или task.jpg)");
+                }
+
+                // Проверяем наличие ответа
+                if (answerFile == null)
+                {
+                    throw new Exception($"В задании {taskNum}, варианте {variantName} заданий 19-21 нет ответа (answer.txt)");
+                }
+
+                // Проверяем что ответ не пустой
+                string answerContent = File.ReadAllText(answerFile).Trim();
+                if (string.IsNullOrEmpty(answerContent))
+                {
+                    throw new Exception($"В задании {taskNum}, варианте {variantName} заданий 19-21 пустой файл ответа");
+                }
+
+                // Для заданий 19-21 доп. материалов не должно быть
+                if (files.Length != 2) // Только task и answer
+                {
+                    throw new Exception($"В задании {taskNum}, варианте {variantName} заданий 19-21 должно быть ровно 2 файла (task и answer), найдено {files.Length}");
+                }
+            }
         }
 
         private void ValidateVariant(string variantFolder, int taskNum,
@@ -381,18 +518,44 @@ namespace EgeGenerator
             // Для каждого задания (1-27)
             for (int taskNum = 1; taskNum <= 27; taskNum++)
             {
-                string taskStoragePath = Path.Combine(storagePath, taskNum.ToString());
-
-                // Получаем все варианты для этого задания
-                string[] availableVariants = Directory.GetDirectories(taskStoragePath);
-                if (availableVariants.Length == 0)
+                // Обработка заданий 19-21 особая
+                if (taskNum >= 19 && taskNum <= 21)
+                {
+                    if (taskNum == 19) // Обрабатываем 19-21 один раз
+                    {
+                        ProcessTask1921(storagePath, tasksFolder, allAnswers, random);
+                    }
                     continue;
+                }
 
-                // Выбираем случайный вариант
-                string selectedVariant = availableVariants[random.Next(availableVariants.Length)];
+                ProcessRegularTask(storagePath, taskNum, tasksFolder, allAnswers, random);
+            }
 
-                // Получаем все файлы выбранного варианта
-                string[] files = Directory.GetFiles(selectedVariant);
+            // Сохраняем все ответы в один файл в папке "Ответы"
+            if (allAnswers.Count > 0)
+            {
+                string answersFile = Path.Combine(answersFolder, "answers.txt");
+                File.WriteAllLines(answersFile, allAnswers);
+            }
+        }
+
+        private void ProcessTask1921(string storagePath, string tasksFolder, List<string> allAnswers, Random random)
+        {
+            string task1921StoragePath = Path.Combine(storagePath, "19-21");
+
+            // Получаем все варианты для заданий 19-21
+            string[] availableVariants = Directory.GetDirectories(task1921StoragePath);
+            if (availableVariants.Length == 0)
+                return;
+
+            // Выбираем случайный вариант
+            string selectedVariant = availableVariants[random.Next(availableVariants.Length)];
+
+            // Для каждого задания 19, 20, 21
+            for (int taskNum = 19; taskNum <= 21; taskNum++)
+            {
+                string taskVariantFolder = Path.Combine(selectedVariant, taskNum.ToString());
+                string[] files = Directory.GetFiles(taskVariantFolder);
 
                 // Создаем папку для задания в конечном варианте
                 string taskOutputFolder = Path.Combine(tasksFolder, taskNum.ToString());
@@ -404,48 +567,69 @@ namespace EgeGenerator
                     string fileName = Path.GetFileNameWithoutExtension(file);
                     string extension = Path.GetExtension(file);
 
-                    string newFileName;
-
                     if (fileName.Equals("task", StringComparison.OrdinalIgnoreCase))
                     {
-                        newFileName = $"{taskNum}.png";
+                        string newFileName = $"{taskNum}.png";
                         string destinationFile = Path.Combine(taskOutputFolder, newFileName);
                         File.Copy(file, destinationFile, true);
                     }
                     else if (fileName.Equals("answer", StringComparison.OrdinalIgnoreCase))
                     {
-                        // ИСПРАВЛЕНО: answer.txt НЕ копируем в папку "Задания"
-                        // Только читаем ответ для сохранения в answers.txt
                         string answerText = File.ReadAllText(file).Trim();
                         allAnswers.Add($"{taskNum} - {answerText}");
                     }
-                    else if (fileName.Equals("A", StringComparison.OrdinalIgnoreCase))
-                    {
-                        newFileName = $"{taskNum}A{extension}";
-                        string destinationFile = Path.Combine(taskOutputFolder, newFileName);
-                        File.Copy(file, destinationFile, true);
-                    }
-                    else if (fileName.Equals("B", StringComparison.OrdinalIgnoreCase))
-                    {
-                        newFileName = $"{taskNum}B{extension}";
-                        string destinationFile = Path.Combine(taskOutputFolder, newFileName);
-                        File.Copy(file, destinationFile, true);
-                    }
-                    else
-                    {
-                        // Для доп. файлов, которые могут быть без буквы A/B
-                        newFileName = $"{taskNum}A{extension}";
-                        string destinationFile = Path.Combine(taskOutputFolder, newFileName);
-                        File.Copy(file, destinationFile, true);
-                    }
                 }
             }
+        }
 
-            // Сохраняем все ответы в один файл в папке "Ответы"
-            if (allAnswers.Count > 0)
+        private void ProcessRegularTask(string storagePath, int taskNum, string tasksFolder, List<string> allAnswers, Random random)
+        {
+            string taskStoragePath = Path.Combine(storagePath, taskNum.ToString());
+
+            // Получаем все варианты для этого задания
+            string[] availableVariants = Directory.GetDirectories(taskStoragePath);
+            if (availableVariants.Length == 0)
+                return;
+
+            // Выбираем случайный вариант
+            string selectedVariant = availableVariants[random.Next(availableVariants.Length)];
+
+            // Получаем все файлы выбранного варианта
+            string[] files = Directory.GetFiles(selectedVariant);
+
+            // Создаем папку для задания в конечном варианте
+            string taskOutputFolder = Path.Combine(tasksFolder, taskNum.ToString());
+            Directory.CreateDirectory(taskOutputFolder);
+
+            // Копируем файлы с переименованием
+            foreach (string file in files)
             {
-                string answersFile = Path.Combine(answersFolder, "answers.txt");
-                File.WriteAllLines(answersFile, allAnswers);
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                string extension = Path.GetExtension(file);
+
+                if (fileName.Equals("task", StringComparison.OrdinalIgnoreCase))
+                {
+                    string newFileName = $"{taskNum}.png";
+                    string destinationFile = Path.Combine(taskOutputFolder, newFileName);
+                    File.Copy(file, destinationFile, true);
+                }
+                else if (fileName.Equals("answer", StringComparison.OrdinalIgnoreCase))
+                {
+                    string answerText = File.ReadAllText(file).Trim();
+                    allAnswers.Add($"{taskNum} - {answerText}");
+                }
+                else if (fileName.Equals("A", StringComparison.OrdinalIgnoreCase))
+                {
+                    string newFileName = $"{taskNum}A{extension}";
+                    string destinationFile = Path.Combine(taskOutputFolder, newFileName);
+                    File.Copy(file, destinationFile, true);
+                }
+                else if (fileName.Equals("B", StringComparison.OrdinalIgnoreCase))
+                {
+                    string newFileName = $"{taskNum}B{extension}";
+                    string destinationFile = Path.Combine(taskOutputFolder, newFileName);
+                    File.Copy(file, destinationFile, true);
+                }
             }
         }
     }
