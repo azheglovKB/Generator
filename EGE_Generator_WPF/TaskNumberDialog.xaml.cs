@@ -6,22 +6,22 @@ namespace EgeGenerator
 {
     public partial class TaskNumberDialog : Window
     {
-        public int TaskNumber { get; private set; }
+        public int NomerZadaniya { get; private set; }
 
         public TaskNumberDialog()
         {
             InitializeComponent();
-            TaskNumber = 0;
+            NomerZadaniya = 0;
             txtTaskNumber.Focus();
         }
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
-            if (int.TryParse(txtTaskNumber.Text, out int number))
+            if (int.TryParse(txtTaskNumber.Text, out int nomer))
             {
-                if (number >= 1 && number <= 27)
+                if (nomer >= 1 && nomer <= 27)
                 {
-                    TaskNumber = number;
+                    NomerZadaniya = nomer;
                     DialogResult = true;
                 }
                 else

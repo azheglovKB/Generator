@@ -11,37 +11,37 @@ namespace EgeGenerator
 {
     public partial class ViewTaskWindow : Window
     {
-        private readonly string _variantFolderPath;
-        private List<TaskInfo> _tasks = new List<TaskInfo>();
-        private int _currentTaskIndex = 0;
-        private string _answersFilePath;
+        private readonly string _putPapkiVarianta;
+        private List<InformatsiyaOZadanii> _zadaniya = new List<InformatsiyaOZadanii>();
+        private int _tekushchiyIndexZadaniya = 0;
+        private string _putKFailuOtvetov;
 
-        private class TaskInfo
+        private class InformatsiyaOZadanii
         {
-            public int TaskNumber { get; set; }
-            public string TaskFolder { get; set; }
-            public string TaskImagePath { get; set; }
-            public string AnswerText { get; set; }
-            public List<string> ExtraFiles { get; set; } = new List<string>();
-            public string TaskDisplayName { get; set; }
+            public int NomerZadaniya { get; set; }
+            public string PapkaZadaniya { get; set; }
+            public string PutKIzobrazheniyuZadaniya { get; set; }
+            public string TekstOtvet { get; set; }
+            public List<string> DopolnitelnyeFaily { get; set; } = new List<string>();
+            public string OtobrazhaemoeImyaZadaniya { get; set; }
         }
 
-        public ViewTaskWindow(string variantFolderPath)
+        public ViewTaskWindow(string putPapkiVarianta)
         {
             InitializeComponent();
-            _variantFolderPath = variantFolderPath;
-            LoadTasks();
+            _putPapkiVarianta = putPapkiVarianta;
+            ZagruzitZadaniya();
         }
 
-        private void LoadTasks()
+        private void ZagruzitZadaniya()
         {
             try
             {
-                string variantName = Path.GetFileName(_variantFolderPath);
-                txtVariantInfo.Text = $"Вариант: {variantName}";
-                string tasksFolder = Path.Combine(_variantFolderPath, "Задания");
+                string imyaVarianta = Path.GetFileName(_putPapkiVarianta);
+                txtVariantInfo.Text = $"Вариант: {imyaVarianta}";
+                string papkaZadaniy = Path.Combine(_putPapkiVarianta, "Задания");
 
-                if (!Directory.Exists(tasksFolder))
+                if (!Directory.Exists(papkaZadaniy))
                 {
                     MessageBox.Show("Папка с заданиями не найдена", "Ошибка",
                         MessageBoxButton.OK, MessageBoxImage.Error);
@@ -49,33 +49,33 @@ namespace EgeGenerator
                     return;
                 }
 
-                LoadAnswersFromAnswersFolder();
+                ZagruzitOtvetyIzPapkiOtvetov();
 
-                for (int taskNum = 1; taskNum <= 27; taskNum++)
+                for (int nomerZadaniya = 1; nomerZadaniya <= 27; nomerZadaniya++)
                 {
-                    if (taskNum >= 19 && taskNum <= 21)
+                    if (nomerZadaniya >= 19 && nomerZadaniya <= 21)
                     {
-                        if (taskNum == 19)
+                        if (nomerZadaniya == 19)
                         {
-                            LoadTasks1921(tasksFolder);
+                            ZagruzitZadaniya1921(papkaZadaniy);
                         }
                         continue;
                     }
 
-                    string taskFolder = Path.Combine(tasksFolder, taskNum.ToString());
-                    if (Directory.Exists(taskFolder))
+                    string papkaZadaniya = Path.Combine(papkaZadaniy, nomerZadaniya.ToString());
+                    if (Directory.Exists(papkaZadaniya))
                     {
-                        var taskInfo = LoadTaskInfo(taskFolder, taskNum);
-                        if (taskInfo != null)
+                        var informatsiyaOZadanii = ZagruzitInformatsiyuOZadanii(papkaZadaniya, nomerZadaniya);
+                        if (informatsiyaOZadanii != null)
                         {
-                            _tasks.Add(taskInfo);
+                            _zadaniya.Add(informatsiyaOZadanii);
                         }
                     }
                 }
 
-                _tasks = _tasks.OrderBy(t => t.TaskNumber).ToList();
+                _zadaniya = _zadaniya.OrderBy(z => z.NomerZadaniya).ToList();
 
-                if (_tasks.Count == 0)
+                if (_zadaniya.Count == 0)
                 {
                     MessageBox.Show("Задания не найдены", "Информация",
                         MessageBoxButton.OK, MessageBoxImage.Information);
@@ -83,7 +83,7 @@ namespace EgeGenerator
                     return;
                 }
 
-                ShowTask(0);
+                PokazatZadanie(0);
             }
             catch (Exception ex)
             {
@@ -93,17 +93,17 @@ namespace EgeGenerator
             }
         }
 
-        private void LoadAnswersFromAnswersFolder()
+        private void ZagruzitOtvetyIzPapkiOtvetov()
         {
             try
             {
-                string answersFolder = Path.Combine(_variantFolderPath, "Ответы");
-                if (Directory.Exists(answersFolder))
+                string papkaOtvetov = Path.Combine(_putPapkiVarianta, "Ответы");
+                if (Directory.Exists(papkaOtvetov))
                 {
-                    string[] answerFiles = Directory.GetFiles(answersFolder, "*.txt");
-                    if (answerFiles.Length > 0)
+                    string[] failyOtvetov = Directory.GetFiles(papkaOtvetov, "*.txt");
+                    if (failyOtvetov.Length > 0)
                     {
-                        _answersFilePath = answerFiles[0];
+                        _putKFailuOtvetov = failyOtvetov[0];
                     }
                 }
             }
@@ -112,70 +112,70 @@ namespace EgeGenerator
             }
         }
 
-        private void LoadTasks1921(string tasksFolder)
+        private void ZagruzitZadaniya1921(string papkaZadaniy)
         {
-            for (int taskNum = 19; taskNum <= 21; taskNum++)
+            for (int nomerZadaniya = 19; nomerZadaniya <= 21; nomerZadaniya++)
             {
-                string taskFolder = Path.Combine(tasksFolder, taskNum.ToString());
-                if (Directory.Exists(taskFolder))
+                string papkaZadaniya = Path.Combine(papkaZadaniy, nomerZadaniya.ToString());
+                if (Directory.Exists(papkaZadaniya))
                 {
-                    var taskInfo = LoadTaskInfo(taskFolder, taskNum);
-                    if (taskInfo != null)
+                    var informatsiyaOZadanii = ZagruzitInformatsiyuOZadanii(papkaZadaniya, nomerZadaniya);
+                    if (informatsiyaOZadanii != null)
                     {
-                        taskInfo.TaskDisplayName = $"Задания 19-21 ({taskNum})";
-                        _tasks.Add(taskInfo);
+                        informatsiyaOZadanii.OtobrazhaemoeImyaZadaniya = $"Задания 19-21 ({nomerZadaniya})";
+                        _zadaniya.Add(informatsiyaOZadanii);
                     }
                 }
             }
         }
 
-        private TaskInfo LoadTaskInfo(string taskFolder, int taskNum)
+        private InformatsiyaOZadanii ZagruzitInformatsiyuOZadanii(string papkaZadaniya, int nomerZadaniya)
         {
             try
             {
-                string[] files = Directory.GetFiles(taskFolder);
-                if (files.Length == 0)
+                string[] faily = Directory.GetFiles(papkaZadaniya);
+                if (faily.Length == 0)
                     return null;
 
-                var taskInfo = new TaskInfo
+                var informatsiyaOZadanii = new InformatsiyaOZadanii
                 {
-                    TaskNumber = taskNum,
-                    TaskFolder = taskFolder,
-                    TaskDisplayName = $"Задание {taskNum}"
+                    NomerZadaniya = nomerZadaniya,
+                    PapkaZadaniya = papkaZadaniya,
+                    OtobrazhaemoeImyaZadaniya = $"Задание {nomerZadaniya}"
                 };
 
-                foreach (string file in files)
+                foreach (string fail in faily)
                 {
-                    string fileName = Path.GetFileName(file).ToLower();
+                    string imyaFaila = Path.GetFileName(fail).ToLower();
 
-                    if (fileName.StartsWith($"{taskNum}.png") ||
-                        fileName.StartsWith($"{taskNum}.jpg") ||
-                        fileName.StartsWith($"{taskNum}.jpeg") ||
-                        fileName == "task.png" ||
-                        fileName == "task.jpg" ||
-                        fileName == "task.jpeg" ||
-                        Path.GetFileNameWithoutExtension(fileName).ToLower() == "task")
+                    if (imyaFaila.StartsWith($"{nomerZadaniya}.png") ||
+                        imyaFaila.StartsWith($"{nomerZadaniya}.jpg") ||
+                        imyaFaila.StartsWith($"{nomerZadaniya}.jpeg") ||
+                        imyaFaila == "task.png" ||
+                        imyaFaila == "task.jpg" ||
+                        imyaFaila == "task.jpeg" ||
+                        Path.GetFileNameWithoutExtension(imyaFaila).ToLower() == "task")
                     {
-                        taskInfo.TaskImagePath = file;
+                        informatsiyaOZadanii.PutKIzobrazheniyuZadaniya = fail;
                     }
-                    else if (fileName.Contains("answer") && fileName.EndsWith(".txt"))
+                    else if (imyaFaila.Contains("answer") && imyaFaila.EndsWith(".txt"))
                     {
-                        taskInfo.AnswerText = File.ReadAllText(file).Trim();
+                        informatsiyaOZadanii.TekstOtvet = File.ReadAllText(fail).Trim();
                     }
-                    else if (!fileName.EndsWith(".png") &&
-                             !fileName.EndsWith(".jpg") &&
-                             !fileName.EndsWith(".jpeg"))
+                    else if (!imyaFaila.EndsWith(".png") &&
+                             !imyaFaila.EndsWith(".jpg") &&
+                             !imyaFaila.EndsWith(".jpeg"))
                     {
-                        taskInfo.ExtraFiles.Add(file);
+                        informatsiyaOZadanii.DopolnitelnyeFaily.Add(fail);
                     }
                 }
 
-                if (string.IsNullOrEmpty(taskInfo.AnswerText) && !string.IsNullOrEmpty(_answersFilePath))
+                if (string.IsNullOrEmpty(informatsiyaOZadanii.TekstOtvet) && !string.IsNullOrEmpty(_putKFailuOtvetov))
                 {
-                    taskInfo.AnswerText = FindAnswerInAnswersFile(taskNum);
+                    informatsiyaOZadanii.TekstOtvet = NaytiOtvetVFaileOtvetov(nomerZadaniya);
                 }
 
-                return taskInfo;
+                return informatsiyaOZadanii;
             }
             catch
             {
@@ -183,73 +183,73 @@ namespace EgeGenerator
             }
         }
 
-        private string FindAnswerInAnswersFile(int taskNum)
+        private string NaytiOtvetVFaileOtvetov(int nomerZadaniya)
         {
             try
             {
-                if (string.IsNullOrEmpty(_answersFilePath) || !File.Exists(_answersFilePath))
+                if (string.IsNullOrEmpty(_putKFailuOtvetov) || !File.Exists(_putKFailuOtvetov))
                     return null;
 
-                string allAnswersText = File.ReadAllText(_answersFilePath);
-                string[] lines = allAnswersText.Split(
+                string vseOtvety = File.ReadAllText(_putKFailuOtvetov);
+                string[] stroki = vseOtvety.Split(
                     new[] { "\r\n", "\r", "\n" },
                     StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (string line in lines)
+                foreach (string stroka in stroki)
                 {
-                    string trimmedLine = line.Trim();
-                    bool isTaskLine = false;
-                    string answerPart = "";
+                    string obrezannayaStroka = stroka.Trim();
+                    bool etoStrokaZadaniya = false;
+                    string chastOtvet = "";
 
-                    if (trimmedLine.StartsWith($"{taskNum}. "))
+                    if (obrezannayaStroka.StartsWith($"{nomerZadaniya}. "))
                     {
-                        isTaskLine = true;
-                        answerPart = trimmedLine.Substring($"{taskNum}. ".Length);
+                        etoStrokaZadaniya = true;
+                        chastOtvet = obrezannayaStroka.Substring($"{nomerZadaniya}. ".Length);
                     }
-                    else if (trimmedLine.StartsWith($"{taskNum}) "))
+                    else if (obrezannayaStroka.StartsWith($"{nomerZadaniya}) "))
                     {
-                        isTaskLine = true;
-                        answerPart = trimmedLine.Substring($"{taskNum}) ".Length);
+                        etoStrokaZadaniya = true;
+                        chastOtvet = obrezannayaStroka.Substring($"{nomerZadaniya}) ".Length);
                     }
-                    else if (trimmedLine.StartsWith($"{taskNum} - "))
+                    else if (obrezannayaStroka.StartsWith($"{nomerZadaniya} - "))
                     {
-                        isTaskLine = true;
-                        answerPart = trimmedLine.Substring($"{taskNum} - ".Length);
+                        etoStrokaZadaniya = true;
+                        chastOtvet = obrezannayaStroka.Substring($"{nomerZadaniya} - ".Length);
                     }
-                    else if (trimmedLine.StartsWith($"{taskNum} – "))
+                    else if (obrezannayaStroka.StartsWith($"{nomerZadaniya} – "))
                     {
-                        isTaskLine = true;
-                        answerPart = trimmedLine.Substring($"{taskNum} – ".Length);
+                        etoStrokaZadaniya = true;
+                        chastOtvet = obrezannayaStroka.Substring($"{nomerZadaniya} – ".Length);
                     }
-                    else if (trimmedLine.StartsWith($"{taskNum} ") &&
-                             trimmedLine.Length > taskNum.ToString().Length + 1)
+                    else if (obrezannayaStroka.StartsWith($"{nomerZadaniya} ") &&
+                             obrezannayaStroka.Length > nomerZadaniya.ToString().Length + 1)
                     {
-                        string afterNumber = trimmedLine.Substring(taskNum.ToString().Length).TrimStart();
-                        if (!string.IsNullOrEmpty(afterNumber))
+                        string posleNomera = obrezannayaStroka.Substring(nomerZadaniya.ToString().Length).TrimStart();
+                        if (!string.IsNullOrEmpty(posleNomera))
                         {
-                            isTaskLine = true;
-                            answerPart = afterNumber;
+                            etoStrokaZadaniya = true;
+                            chastOtvet = posleNomera;
                         }
                     }
-                    else if (trimmedLine.StartsWith($"{taskNum}: "))
+                    else if (obrezannayaStroka.StartsWith($"{nomerZadaniya}: "))
                     {
-                        isTaskLine = true;
-                        answerPart = trimmedLine.Substring($"{taskNum}: ".Length);
+                        etoStrokaZadaniya = true;
+                        chastOtvet = obrezannayaStroka.Substring($"{nomerZadaniya}: ".Length);
                     }
 
-                    if (isTaskLine && !string.IsNullOrEmpty(answerPart))
+                    if (etoStrokaZadaniya && !string.IsNullOrEmpty(chastOtvet))
                     {
-                        string[] answerLines = answerPart.Split(
+                        string[] strokiOtvet = chastOtvet.Split(
                             new[] { "\r\n", "\r", "\n" },
                             StringSplitOptions.RemoveEmptyEntries);
 
-                        if (answerLines.Length > 1)
+                        if (strokiOtvet.Length > 1)
                         {
-                            return string.Join(" ", answerLines.Select(l => l.Trim()));
+                            return string.Join(" ", strokiOtvet.Select(l => l.Trim()));
                         }
                         else
                         {
-                            return answerPart.Trim();
+                            return chastOtvet.Trim();
                         }
                     }
                 }
@@ -262,22 +262,22 @@ namespace EgeGenerator
             }
         }
 
-        private void ShowTask(int index)
+        private void PokazatZadanie(int index)
         {
-            if (index < 0 || index >= _tasks.Count)
+            if (index < 0 || index >= _zadaniya.Count)
                 return;
 
-            _currentTaskIndex = index;
-            var task = _tasks[index];
-            txtTaskTitle.Text = task.TaskDisplayName;
+            _tekushchiyIndexZadaniya = index;
+            var zadanie = _zadaniya[index];
+            txtTaskTitle.Text = zadanie.OtobrazhaemoeImyaZadaniya;
 
-            if (!string.IsNullOrEmpty(task.TaskImagePath) && File.Exists(task.TaskImagePath))
+            if (!string.IsNullOrEmpty(zadanie.PutKIzobrazheniyuZadaniya) && File.Exists(zadanie.PutKIzobrazheniyuZadaniya))
             {
                 try
                 {
                     var bitmap = new BitmapImage();
                     bitmap.BeginInit();
-                    bitmap.UriSource = new Uri(task.TaskImagePath);
+                    bitmap.UriSource = new Uri(zadanie.PutKIzobrazheniyuZadaniya);
                     bitmap.CacheOption = BitmapCacheOption.OnLoad;
                     bitmap.EndInit();
                     taskImage.Source = bitmap;
@@ -292,36 +292,36 @@ namespace EgeGenerator
                 taskImage.Source = null;
             }
 
-            string answerText = task.AnswerText;
-            if (string.IsNullOrEmpty(answerText))
+            string tekstOtvet = zadanie.TekstOtvet;
+            if (string.IsNullOrEmpty(tekstOtvet))
             {
-                answerText = "Ответ не найден";
+                tekstOtvet = "Ответ не найден";
                 txtAnswer.Foreground = Brushes.Red;
             }
             else
             {
                 txtAnswer.Foreground = Brushes.Black;
-                if (answerText.Contains("\r") || answerText.Contains("\n"))
+                if (tekstOtvet.Contains("\r") || tekstOtvet.Contains("\n"))
                 {
-                    string[] answerLines = answerText.Split(
+                    string[] strokiOtvet = tekstOtvet.Split(
                         new[] { "\r\n", "\r", "\n" },
                         StringSplitOptions.RemoveEmptyEntries);
 
-                    answerText = string.Join(" ", answerLines.Select(l => l.Trim()));
+                    tekstOtvet = string.Join(" ", strokiOtvet.Select(l => l.Trim()));
                 }
             }
-            txtAnswer.Text = answerText;
+            txtAnswer.Text = tekstOtvet;
 
             extraFilesStackPanel.Children.Clear();
-            if (task.ExtraFiles.Count > 0)
+            if (zadanie.DopolnitelnyeFaily.Count > 0)
             {
                 extraMaterialsPanel.Visibility = Visibility.Visible;
-                foreach (string file in task.ExtraFiles)
+                foreach (string fail in zadanie.DopolnitelnyeFaily)
                 {
-                    string fileName = Path.GetFileName(file);
-                    var button = new Button
+                    string imyaFaila = Path.GetFileName(fail);
+                    var knopka = new Button
                     {
-                        Content = fileName,
+                        Content = imyaFaila,
                         HorizontalAlignment = HorizontalAlignment.Left,
                         Margin = new Thickness(0, 0, 0, 5),
                         Padding = new Thickness(10, 5, 10, 5),
@@ -329,8 +329,8 @@ namespace EgeGenerator
                         Background = Brushes.LightGray
                     };
 
-                    button.Click += (s, e) => OpenExtraFile(file);
-                    extraFilesStackPanel.Children.Add(button);
+                    knopka.Click += (s, e) => OtkrytDopolnitelnyFail(fail);
+                    extraFilesStackPanel.Children.Add(knopka);
                 }
             }
             else
@@ -338,19 +338,19 @@ namespace EgeGenerator
                 extraMaterialsPanel.Visibility = Visibility.Collapsed;
             }
 
-            btnPrev.IsEnabled = _currentTaskIndex > 0;
-            btnNext.IsEnabled = _currentTaskIndex < _tasks.Count - 1;
+            btnPrev.IsEnabled = _tekushchiyIndexZadaniya > 0;
+            btnNext.IsEnabled = _tekushchiyIndexZadaniya < _zadaniya.Count - 1;
         }
 
-        private void OpenExtraFile(string filePath)
+        private void OtkrytDopolnitelnyFail(string putKFailu)
         {
             try
             {
-                if (File.Exists(filePath))
+                if (File.Exists(putKFailu))
                 {
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                     {
-                        FileName = filePath,
+                        FileName = putKFailu,
                         UseShellExecute = true
                     });
                 }
@@ -369,17 +369,17 @@ namespace EgeGenerator
 
         private void BtnPrev_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentTaskIndex > 0)
+            if (_tekushchiyIndexZadaniya > 0)
             {
-                ShowTask(_currentTaskIndex - 1);
+                PokazatZadanie(_tekushchiyIndexZadaniya - 1);
             }
         }
 
         private void BtnNext_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentTaskIndex < _tasks.Count - 1)
+            if (_tekushchiyIndexZadaniya < _zadaniya.Count - 1)
             {
-                ShowTask(_currentTaskIndex + 1);
+                PokazatZadanie(_tekushchiyIndexZadaniya + 1);
             }
         }
 

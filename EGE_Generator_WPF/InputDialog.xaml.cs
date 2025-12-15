@@ -4,19 +4,19 @@ namespace EgeGenerator
 {
     public partial class InputDialog : Window
     {
-        public string Answer { get; private set; }
+        public string Otvet { get; private set; }
 
-        public InputDialog(string title)
+        public InputDialog(string zagolovok)
         {
             InitializeComponent();
-            Title = title;
-            Answer = "";
+            Title = zagolovok;
+            Otvet = "";
             txtInput.Focus();
         }
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
-            Answer = txtInput.Text;
+            Otvet = txtInput.Text;
             DialogResult = true;
         }
     }
