@@ -7,7 +7,7 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
 
-    <Grid Margin="20">
+    <Grid Margin="20,10,20,30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -27,7 +27,6 @@
                  PreviewTextInput="TxtTaskNumber_PreviewTextInput"/>
 
         <TextBlock Grid.Row="2" 
-                   Text="Задания с доп. материалами: 3,9,10,17,18,22,24,26 (1 доп.), 27 (2 доп.)" 
                    FontSize="12"
                    Foreground="#666666"
                    TextWrapping="Wrap"

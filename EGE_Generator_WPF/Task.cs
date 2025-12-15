@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace EgeGenerator.Models
+namespace EgeGenerator
 {
     public enum TaskType
     {
