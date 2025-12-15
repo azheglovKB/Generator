@@ -122,7 +122,7 @@ namespace EgeGenerator
                     var informatsiyaOZadanii = ZagruzitInformatsiyuOZadanii(papkaZadaniya, nomerZadaniya);
                     if (informatsiyaOZadanii != null)
                     {
-                        informatsiyaOZadanii.OtobrazhaemoeImyaZadaniya = $"Задания 19-21 ({nomerZadaniya})";
+                        informatsiyaOZadanii.OtobrazhaemoeImyaZadaniya = $"Задание {nomerZadaniya}";
                         _zadaniya.Add(informatsiyaOZadanii);
                     }
                 }
