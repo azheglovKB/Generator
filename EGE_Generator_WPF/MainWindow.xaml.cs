@@ -125,13 +125,13 @@ namespace EgeGenerator
             var dialogVvoda = new InputDialog("Количество вариантов");
             if (dialogVvoda.ShowDialog() == true)
             {
-                if (int.TryParse(dialogVvoda.Otvet, out int kolichestvo) && kolichestvo > 0)
+                if (int.TryParse(dialogVvoda.Otvet, out int kolichestvo) && kolichestvo > 0 && kolichestvo <= 100)
                 {
                     return kolichestvo;
                 }
                 else
                 {
-                    MessageBox.Show("Введите корректное положительное число",
+                    MessageBox.Show("Введите корректное положительное число меньше 100",
                         "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
