@@ -7,30 +7,45 @@
         WindowStartupLocation="CenterScreen">
 
     <Grid Margin="20">
-        <!-- Основные кнопки -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="btnGenerate" 
-                    Content="СГЕНЕРИРОВАТЬ ВАРИАНТЫ" 
-                    Height="80" 
-                    FontSize="18" 
-                    FontWeight="Bold"
-                    Background="#2196F3" 
-                    Foreground="White"
-                    BorderThickness="0"
-                    Click="BtnGenerate_Click"
-                    Margin="0,0,20,0"
-                    Width="289"/>
+        <!-- Кнопки -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <!-- Основные кнопки -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <Button x:Name="btnGenerate" 
+                        Content="СГЕНЕРИРОВАТЬ ВАРИАНТЫ" 
+                        Height="80" 
+                        FontSize="18" 
+                        FontWeight="Bold"
+                        Background="#2196F3" 
+                        Foreground="White"
+                        BorderThickness="0"
+                        Click="BtnGenerate_Click"
+                        Margin="0,0,20,0"
+                        Width="289"/>
 
-            <Button x:Name="btnAddTask" 
-                    Content="ДОБАВИТЬ ЗАДАНИЕ" 
-                    Height="80" 
-                    FontSize="18" 
+                <Button x:Name="btnAddTask" 
+                        Content="ДОБАВИТЬ ЗАДАНИЕ" 
+                        Height="80" 
+                        FontSize="18" 
+                        FontWeight="Bold"
+                        Background="#4CAF50" 
+                        Foreground="White"
+                        BorderThickness="0"
+                        Click="BtnAddTask_Click"
+                        Width="290"/>
+            </StackPanel>
+
+            <!-- Кнопка просмотра варианта -->
+            <Button x:Name="btnViewVariant" 
+                    Content="ПРОСМОТРЕТЬ ВАРИАНТ" 
+                    Height="50" 
+                    FontSize="16" 
                     FontWeight="Bold"
-                    Background="#4CAF50" 
+                    Background="#FF9800" 
                     Foreground="White"
                     BorderThickness="0"
-                    Click="BtnAddTask_Click"
-                    Width="290"/>
+                    Click="BtnViewVariant_Click"
+                    Width="600"/>
         </StackPanel>
     </Grid>
 </Window>

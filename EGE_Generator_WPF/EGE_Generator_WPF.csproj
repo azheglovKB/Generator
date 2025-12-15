@@ -59,11 +59,12 @@
     <Compile Include="AddVariantDialog.xaml.cs">
       <DependentUpon>AddVariantDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Task.cs" />
     <Compile Include="TaskNumberDialog.xaml.cs">
       <DependentUpon>TaskNumberDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Variant.cs" />
+    <Compile Include="ViewTaskWindow.xaml.cs">
+      <DependentUpon>ViewTaskWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddVariantDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -88,6 +89,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="TaskNumberDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewTaskWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -381,13 +381,13 @@ namespace EgeGenerator
 
             // Ищем обязательные файлы
             string taskFile = files.FirstOrDefault(f =>
-                Path.GetFileNameWithoutExtension(f).Equals("task", StringComparison.OrdinalIgnoreCase) &&
-                (f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                 f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)));
+            Path.GetFileNameWithoutExtension(f).Equals("task", StringComparison.OrdinalIgnoreCase) &&
+            (f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+             f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)));
 
             string answerFile = files.FirstOrDefault(f =>
-                Path.GetFileNameWithoutExtension(f).Equals("answer", StringComparison.OrdinalIgnoreCase) &&
-                f.EndsWith(".txt", StringComparison.OrdinalIgnoreCase));
+            Path.GetFileNameWithoutExtension(f).Equals("answer", StringComparison.OrdinalIgnoreCase) &&
+            f.EndsWith(".txt", StringComparison.OrdinalIgnoreCase));
 
             // Проверяем наличие задания
             if (taskFile == null)
@@ -616,6 +616,64 @@ namespace EgeGenerator
                     string destinationFile = Path.Combine(taskOutputFolder, newFileName);
                     File.Copy(file, destinationFile, true);
                 }
+            }
+        }
+
+        // Метод для просмотра сгенерированных вариантов
+        private void BtnViewVariant_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Диалог выбора папки с вариантом
+                var dialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Title = "Выберите папку с вариантом для просмотра",
+                    Filter = "Папки|*.folder",
+                    CheckFileExists = false,
+                    CheckPathExists = true,
+                    FileName = "Выберите эту папку"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    string selectedPath = Path.GetDirectoryName(dialog.FileName);
+
+                    if (!string.IsNullOrEmpty(selectedPath) && Directory.Exists(selectedPath))
+                    {
+                        // Проверяем, что это папка с вариантом (есть папка "Задания")
+                        string tasksFolder = Path.Combine(selectedPath, "Задания");
+                        if (Directory.Exists(tasksFolder))
+                        {
+                            var viewWindow = new ViewTaskWindow(selectedPath);
+                            viewWindow.Owner = this;
+                            viewWindow.ShowDialog();
+                        }
+                        else
+                        {
+                            // Ищем варианты в выбранной папке
+                            var subFolders = Directory.GetDirectories(selectedPath);
+                            foreach (string folder in subFolders)
+                            {
+                                string subTasksFolder = Path.Combine(folder, "Задания");
+                                if (Directory.Exists(subTasksFolder))
+                                {
+                                    var viewWindow = new ViewTaskWindow(folder);
+                                    viewWindow.Owner = this;
+                                    viewWindow.ShowDialog();
+                                    return;
+                                }
+                            }
+
+                            MessageBox.Show("В выбранной папке не найдены варианты с заданиями",
+                                "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
