@@ -6,15 +6,12 @@
         Width="1400"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
-        <!-- Заголовок -->
         <Border Grid.Row="0" 
                 Background="#2196F3" 
                 Padding="10">
@@ -30,13 +27,10 @@
                            Foreground="White"/>
             </StackPanel>
         </Border>
-
-        <!-- Основной контент -->
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto" 
                       Padding="20">
             <StackPanel x:Name="mainPanel">
-                <!-- Изображение задания -->
                 <Border BorderBrush="#DDDDDD" 
                         BorderThickness="1" 
                         Background="White"
@@ -46,18 +40,13 @@
                            Stretch="None" 
                            HorizontalAlignment="Left"/>
                 </Border>
-
-                <!-- Дополнительные материалы -->
                 <StackPanel x:Name="extraMaterialsPanel" 
                             Visibility="Collapsed">
                     <TextBlock Text="Дополнительные материалы:" 
                                FontWeight="Bold" 
                                Margin="0,0,0,10"/>
-
                     <StackPanel x:Name="extraFilesStackPanel"/>
                 </StackPanel>
-
-                <!-- Ответ -->
                 <Border BorderBrush="#DDDDDD" 
                         BorderThickness="1" 
                         Background="#F9F9F9"
@@ -79,8 +68,6 @@
                 </Border>
             </StackPanel>
         </ScrollViewer>
-
-        <!-- Кнопки -->
         <Border Grid.Row="2" 
                 Background="#F5F5F5" 
                 BorderBrush="#DDDDDD" 

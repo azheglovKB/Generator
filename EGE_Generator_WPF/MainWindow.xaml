@@ -5,11 +5,8 @@
         Height="392" 
         Width="730"
         WindowStartupLocation="CenterScreen">
-
     <Grid Margin="20">
-        <!-- Кнопки -->
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <!-- Основные кнопки -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                 <Button x:Name="btnGenerate" 
                         Content="СГЕНЕРИРОВАТЬ ВАРИАНТЫ" 
@@ -22,7 +19,6 @@
                         Click="BtnGenerate_Click"
                         Margin="0,0,20,0"
                         Width="289"/>
-
                 <Button x:Name="btnAddTask" 
                         Content="ДОБАВИТЬ ЗАДАНИЕ" 
                         Height="80" 
@@ -34,8 +30,6 @@
                         Click="BtnAddTask_Click"
                         Width="290"/>
             </StackPanel>
-
-            <!-- Кнопка просмотра варианта -->
             <Button x:Name="btnViewVariant" 
                     Content="ПРОСМОТРЕТЬ ВАРИАНТ" 
                     Height="50" 

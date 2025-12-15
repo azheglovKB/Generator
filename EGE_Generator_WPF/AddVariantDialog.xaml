@@ -8,20 +8,14 @@
         MinWidth="500"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize">
-
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
-
-            <!-- Заголовок -->
             <TextBlock x:Name="txtTitle" 
                        Text="Добавление варианта задания" 
                        FontSize="18" 
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,10"/>
-
-            <!-- ОБЫЧНЫЕ ПОЛЯ -->
-            <!-- Задание -->
             <Border x:Name="borderTask" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
                 <StackPanel>
                     <TextBlock Text="Задание (png или jpg):" FontWeight="Bold" Margin="0,0,0,5"/>
@@ -34,8 +28,6 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-
-            <!-- Ответ -->
             <Border x:Name="borderAnswer" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
                 <StackPanel>
                     <TextBlock Text="Ответ:" FontWeight="Bold" Margin="0,0,0,5"/>
@@ -48,8 +40,6 @@
                              AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                 </StackPanel>
             </Border>
-
-            <!-- Доп. материал A -->
             <Border x:Name="borderExtraA" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" 
                     Margin="0,0,0,10" Visibility="Collapsed">
                 <StackPanel>
@@ -65,8 +55,6 @@
                                FontSize="10" Foreground="#666666" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
-
-            <!-- Доп. материал B -->
             <Border x:Name="borderExtraB" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" 
                     Margin="0,0,0,10" Visibility="Collapsed">
                 <StackPanel>
@@ -82,15 +70,11 @@
                                FontSize="10" Foreground="#666666" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
-
-            <!-- ПОЛЯ ДЛЯ 19-21 -->
             <Border x:Name="border1921" BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" 
                     Margin="0,0,0,10" Visibility="Collapsed">
                 <StackPanel>
                     <TextBlock Text="Задания 19-21 (все три должны быть заполнены):" 
                                FontWeight="Bold" Margin="0,0,0,10" FontSize="14"/>
-
-                    <!-- Задание 19 -->
                     <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,10" Margin="0,0,0,10">
                         <StackPanel>
                             <TextBlock Text="Задание 19:" FontWeight="SemiBold" Margin="0,0,0,5"/>
@@ -102,7 +86,6 @@
                                 <TextBlock x:Name="txtTask19Check" Text="✗" Foreground="Red" FontWeight="Bold" 
                                            Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <Button x:Name="btnBrowseAnswer19" Content="Ответ из файла" Width="100" Height="30" 
                                         Click="BtnBrowseAnswer19_Click" Margin="0,0,10,0"/>
@@ -111,15 +94,12 @@
                                 <TextBlock x:Name="txtAnswer19Check" Text="✗" Foreground="Red" FontWeight="Bold" 
                                            Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-
                             <TextBlock Text="Или введите ответ вручную:" Margin="0,5,0,5" FontSize="12"/>
                             <TextBox x:Name="txtAnswer19" Height="60" TextWrapping="Wrap" 
                                      AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
                                      TextChanged="TxtAnswer19_TextChanged"/>
                         </StackPanel>
                     </Border>
-
-                    <!-- Задание 20 -->
                     <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,10" Margin="0,0,0,10">
                         <StackPanel>
                             <TextBlock Text="Задание 20:" FontWeight="SemiBold" Margin="0,0,0,5"/>
@@ -131,7 +111,6 @@
                                 <TextBlock x:Name="txtTask20Check" Text="✗" Foreground="Red" FontWeight="Bold" 
                                            Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <Button x:Name="btnBrowseAnswer20" Content="Ответ из файла" Width="100" Height="30" 
                                         Click="BtnBrowseAnswer20_Click" Margin="0,0,10,0"/>
@@ -140,15 +119,12 @@
                                 <TextBlock x:Name="txtAnswer20Check" Text="✗" Foreground="Red" FontWeight="Bold" 
                                            Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-
                             <TextBlock Text="Или введите ответ вручную:" Margin="0,5,0,5" FontSize="12"/>
                             <TextBox x:Name="txtAnswer20" Height="60" TextWrapping="Wrap" 
                                      AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
                                      TextChanged="TxtAnswer20_TextChanged"/>
                         </StackPanel>
                     </Border>
-
-                    <!-- Задание 21 -->
                     <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,10">
                         <StackPanel>
                             <TextBlock Text="Задание 21:" FontWeight="SemiBold" Margin="0,0,0,5"/>
@@ -160,7 +136,6 @@
                                 <TextBlock x:Name="txtTask21Check" Text="✗" Foreground="Red" FontWeight="Bold" 
                                            Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <Button x:Name="btnBrowseAnswer21" Content="Ответ из файла" Width="100" Height="30" 
                                         Click="BtnBrowseAnswer21_Click" Margin="0,0,10,0"/>
@@ -169,7 +144,6 @@
                                 <TextBlock x:Name="txtAnswer21Check" Text="✗" Foreground="Red" FontWeight="Bold" 
                                            Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-
                             <TextBlock Text="Или введите ответ вручную:" Margin="0,5,0,5" FontSize="12"/>
                             <TextBox x:Name="txtAnswer21" Height="60" TextWrapping="Wrap" 
                                      AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
@@ -178,20 +152,15 @@
                     </Border>
                 </StackPanel>
             </Border>
-
-            <!-- Информация -->
             <Border Background="#E3F2FD" BorderBrush="#90CAF9" BorderThickness="1" Padding="10" Margin="0,0,0,10">
                 <TextBlock x:Name="txtVariantInfo" Text="Будет создан вариант № ?" FontWeight="SemiBold"/>
             </Border>
-
-            <!-- Кнопки -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="Сохранить" Width="100" Height="35" Background="#4CAF50" Foreground="White"
                         FontWeight="Bold" IsDefault="True" Click="BtnSave_Click"/>
                 <Button Content="Отмена" Width="100" Height="35" Background="#F44336" Foreground="White"
                         FontWeight="Bold" Margin="10,0,0,0" IsCancel="True"/>
             </StackPanel>
-
         </StackPanel>
     </ScrollViewer>
 </Window>

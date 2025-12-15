@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,7 +11,7 @@ namespace EgeGenerator
 {
     public partial class ViewTaskWindow : Window
     {
-        private string _variantFolderPath;
+        private readonly string _variantFolderPath;
         private List<TaskInfo> _tasks = new List<TaskInfo>();
         private int _currentTaskIndex = 0;
         private string _answersFilePath;
@@ -40,7 +39,6 @@ namespace EgeGenerator
             {
                 string variantName = Path.GetFileName(_variantFolderPath);
                 txtVariantInfo.Text = $"Вариант: {variantName}";
-
                 string tasksFolder = Path.Combine(_variantFolderPath, "Задания");
 
                 if (!Directory.Exists(tasksFolder))
@@ -51,15 +49,10 @@ namespace EgeGenerator
                     return;
                 }
 
-                // Загружаем все ответы из папки "Ответы" если есть
                 LoadAnswersFromAnswersFolder();
 
-                // Загружаем все задания
                 for (int taskNum = 1; taskNum <= 27; taskNum++)
                 {
-                    string taskFolder = Path.Combine(tasksFolder, taskNum.ToString());
-
-                    // Для заданий 19-21 особая обработка
                     if (taskNum >= 19 && taskNum <= 21)
                     {
                         if (taskNum == 19)
@@ -69,6 +62,7 @@ namespace EgeGenerator
                         continue;
                     }
 
+                    string taskFolder = Path.Combine(tasksFolder, taskNum.ToString());
                     if (Directory.Exists(taskFolder))
                     {
                         var taskInfo = LoadTaskInfo(taskFolder, taskNum);
@@ -79,7 +73,6 @@ namespace EgeGenerator
                     }
                 }
 
-                // Сортируем по номеру задания
                 _tasks = _tasks.OrderBy(t => t.TaskNumber).ToList();
 
                 if (_tasks.Count == 0)
@@ -110,20 +103,17 @@ namespace EgeGenerator
                     string[] answerFiles = Directory.GetFiles(answersFolder, "*.txt");
                     if (answerFiles.Length > 0)
                     {
-                        // Берем первый файл с ответами
                         _answersFilePath = answerFiles[0];
                     }
                 }
             }
             catch
             {
-                // Игнорируем ошибки при загрузке ответов
             }
         }
 
         private void LoadTasks1921(string tasksFolder)
         {
-            // Проверяем, есть ли папки 19, 20, 21
             for (int taskNum = 19; taskNum <= 21; taskNum++)
             {
                 string taskFolder = Path.Combine(tasksFolder, taskNum.ToString());
@@ -154,12 +144,10 @@ namespace EgeGenerator
                     TaskDisplayName = $"Задание {taskNum}"
                 };
 
-                // Ищем файлы заданий
                 foreach (string file in files)
                 {
                     string fileName = Path.GetFileName(file).ToLower();
 
-                    // Ищем изображение задания
                     if (fileName.StartsWith($"{taskNum}.png") ||
                         fileName.StartsWith($"{taskNum}.jpg") ||
                         fileName.StartsWith($"{taskNum}.jpeg") ||
@@ -170,12 +158,10 @@ namespace EgeGenerator
                     {
                         taskInfo.TaskImagePath = file;
                     }
-                    // Ищем локальный файл с ответом
                     else if (fileName.Contains("answer") && fileName.EndsWith(".txt"))
                     {
                         taskInfo.AnswerText = File.ReadAllText(file).Trim();
                     }
-                    // Дополнительные материалы
                     else if (!fileName.EndsWith(".png") &&
                              !fileName.EndsWith(".jpg") &&
                              !fileName.EndsWith(".jpeg"))
@@ -184,7 +170,6 @@ namespace EgeGenerator
                     }
                 }
 
-                // Если ответ не найден в папке задания, ищем в общем файле ответов
                 if (string.IsNullOrEmpty(taskInfo.AnswerText) && !string.IsNullOrEmpty(_answersFilePath))
                 {
                     taskInfo.AnswerText = FindAnswerInAnswersFile(taskNum);
@@ -205,59 +190,40 @@ namespace EgeGenerator
                 if (string.IsNullOrEmpty(_answersFilePath) || !File.Exists(_answersFilePath))
                     return null;
 
-                // Читаем весь файл ответов
                 string allAnswersText = File.ReadAllText(_answersFilePath);
-
-                // Разбиваем на строки
                 string[] lines = allAnswersText.Split(
                     new[] { "\r\n", "\r", "\n" },
                     StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (string line in lines)
                 {
-                    // Ищем строку, которая начинается с номера задания
-                    // Поддерживаем разные форматы:
-                    // "1. ответ"
-                    // "1) ответ" 
-                    // "1 - ответ"
-                    // "1 ответ"
-                    // "1: ответ"
-
                     string trimmedLine = line.Trim();
-
-                    // Проверяем разные форматы начала строки
                     bool isTaskLine = false;
                     string answerPart = "";
 
-                    // Формат "1. ответ"
                     if (trimmedLine.StartsWith($"{taskNum}. "))
                     {
                         isTaskLine = true;
                         answerPart = trimmedLine.Substring($"{taskNum}. ".Length);
                     }
-                    // Формат "1) ответ"
                     else if (trimmedLine.StartsWith($"{taskNum}) "))
                     {
                         isTaskLine = true;
                         answerPart = trimmedLine.Substring($"{taskNum}) ".Length);
                     }
-                    // Формат "1 - ответ"
                     else if (trimmedLine.StartsWith($"{taskNum} - "))
                     {
                         isTaskLine = true;
                         answerPart = trimmedLine.Substring($"{taskNum} - ".Length);
                     }
-                    // Формат "1 – ответ" (длинное тире)
                     else if (trimmedLine.StartsWith($"{taskNum} – "))
                     {
                         isTaskLine = true;
                         answerPart = trimmedLine.Substring($"{taskNum} – ".Length);
                     }
-                    // Формат "1 ответ" (просто пробел)
                     else if (trimmedLine.StartsWith($"{taskNum} ") &&
                              trimmedLine.Length > taskNum.ToString().Length + 1)
                     {
-                        // Проверяем следующий символ после номера и пробела
                         string afterNumber = trimmedLine.Substring(taskNum.ToString().Length).TrimStart();
                         if (!string.IsNullOrEmpty(afterNumber))
                         {
@@ -265,7 +231,6 @@ namespace EgeGenerator
                             answerPart = afterNumber;
                         }
                     }
-                    // Формат "1: ответ"
                     else if (trimmedLine.StartsWith($"{taskNum}: "))
                     {
                         isTaskLine = true;
@@ -274,20 +239,16 @@ namespace EgeGenerator
 
                     if (isTaskLine && !string.IsNullOrEmpty(answerPart))
                     {
-                        // Если ответ состоит из нескольких строк (например, несколько вариантов через запятую)
-                        // Очищаем от лишних пробелов и объединяем в одну строку
                         string[] answerLines = answerPart.Split(
                             new[] { "\r\n", "\r", "\n" },
                             StringSplitOptions.RemoveEmptyEntries);
 
                         if (answerLines.Length > 1)
                         {
-                            // Если ответ разбит на несколько строк, соединяем их через пробел
                             return string.Join(" ", answerLines.Select(l => l.Trim()));
                         }
                         else
                         {
-                            // Одна строка - просто возвращаем её
                             return answerPart.Trim();
                         }
                     }
@@ -308,11 +269,8 @@ namespace EgeGenerator
 
             _currentTaskIndex = index;
             var task = _tasks[index];
-
-            // Заголовок
             txtTaskTitle.Text = task.TaskDisplayName;
 
-            // Изображение задания
             if (!string.IsNullOrEmpty(task.TaskImagePath) && File.Exists(task.TaskImagePath))
             {
                 try
@@ -334,7 +292,6 @@ namespace EgeGenerator
                 taskImage.Source = null;
             }
 
-            // Ответ
             string answerText = task.AnswerText;
             if (string.IsNullOrEmpty(answerText))
             {
@@ -344,8 +301,6 @@ namespace EgeGenerator
             else
             {
                 txtAnswer.Foreground = Brushes.Black;
-
-                // Если ответ содержит несколько строк, объединяем их через пробел
                 if (answerText.Contains("\r") || answerText.Contains("\n"))
                 {
                     string[] answerLines = answerText.Split(
@@ -357,7 +312,6 @@ namespace EgeGenerator
             }
             txtAnswer.Text = answerText;
 
-            // Дополнительные материалы
             extraFilesStackPanel.Children.Clear();
             if (task.ExtraFiles.Count > 0)
             {
@@ -365,7 +319,6 @@ namespace EgeGenerator
                 foreach (string file in task.ExtraFiles)
                 {
                     string fileName = Path.GetFileName(file);
-
                     var button = new Button
                     {
                         Content = fileName,
@@ -377,7 +330,6 @@ namespace EgeGenerator
                     };
 
                     button.Click += (s, e) => OpenExtraFile(file);
-
                     extraFilesStackPanel.Children.Add(button);
                 }
             }
@@ -386,7 +338,6 @@ namespace EgeGenerator
                 extraMaterialsPanel.Visibility = Visibility.Collapsed;
             }
 
-            // Обновляем состояние кнопок навигации
             btnPrev.IsEnabled = _currentTaskIndex > 0;
             btnNext.IsEnabled = _currentTaskIndex < _tasks.Count - 1;
         }

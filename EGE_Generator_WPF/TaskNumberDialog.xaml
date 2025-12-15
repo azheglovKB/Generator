@@ -6,7 +6,6 @@
         Width="400"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
-
     <Grid Margin="20,10,20,30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,24 +13,20 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <TextBlock Text="Введите номер задания (от 1 до 27)" 
                    FontSize="16"
                    Margin="0,0,0,15"/>
-
         <TextBox x:Name="txtTaskNumber" 
                  Grid.Row="1" 
                  FontSize="18"
                  Height="40"
                  TextAlignment="Center"
                  PreviewTextInput="TxtTaskNumber_PreviewTextInput"/>
-
         <TextBlock Grid.Row="2" 
                    FontSize="12"
                    Foreground="#666666"
                    TextWrapping="Wrap"
                    Margin="0,20,0,0"/>
-
         <StackPanel Grid.Row="3" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"

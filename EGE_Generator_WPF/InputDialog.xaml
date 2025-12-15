@@ -6,7 +6,6 @@
         Width="400"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
-
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,17 +13,14 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <TextBlock Text="Сколько вариантов хотите сгенерировать?" 
                    FontSize="16"
                    Margin="0,0,0,15"/>
-
         <TextBox x:Name="txtInput" 
                  Grid.Row="1" 
                  FontSize="18"
                  Height="40"
                  TextAlignment="Center"/>
-
         <StackPanel Grid.Row="3" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"

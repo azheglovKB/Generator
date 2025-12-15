@@ -10,42 +10,39 @@ namespace EgeGenerator
 {
     public partial class AddVariantDialog : Window
     {
-        private int _taskNumber;
-        private string _storagePath;
-
-        // Для обычных заданий
+        private readonly int _taskNumber;
+        private readonly string _storagePath;
         private string _taskFilePath;
         private string _answerFilePath;
         private string _extraAFilePath;
         private string _extraBFilePath;
-
-        // Для заданий 19-21
-        private Dictionary<int, string> _taskFiles1921 = new Dictionary<int, string>(); // taskNum -> filePath
-        private Dictionary<int, string> _answerTexts1921 = new Dictionary<int, string>(); // taskNum -> answerText (ручной ввод)
-        private Dictionary<int, string> _answerFiles1921 = new Dictionary<int, string>(); // taskNum -> filePath (загрузка файла)
-
+        private readonly Dictionary<int, string> _taskFiles1921 = new Dictionary<int, string>();
+        private readonly Dictionary<int, string> _answerTexts1921 = new Dictionary<int, string>();
+        private readonly Dictionary<int, string> _answerFiles1921 = new Dictionary<int, string>();
         private static readonly HashSet<int> _tasksWithOneExtra = new HashSet<int> { 3, 9, 10, 17, 18, 22, 24, 26 };
         private static readonly HashSet<int> _tasksWithTwoExtra = new HashSet<int> { 27 };
         private static readonly string[] _allowedExtraExtensions = { ".txt", ".ods", ".xlsx", ".xls", ".pdf", ".doc", ".docx" };
-
         private const string PAPKA_1921 = "19-21";
-
         public int VariantNumber { get; private set; }
 
         public AddVariantDialog(int taskNumber, string storagePath)
         {
             InitializeComponent();
-
             _taskNumber = taskNumber;
             _storagePath = storagePath;
+            InitializeFields();
+            InitializeUI();
+            UpdateVariantNumber();
+        }
 
+        private void InitializeFields()
+        {
             _taskFilePath = "";
             _answerFilePath = "";
             _extraAFilePath = "";
             _extraBFilePath = "";
             VariantNumber = 0;
 
-            // Инициализация для 19-21
             if (_taskNumber >= 19 && _taskNumber <= 21)
             {
                 for (int i = 19; i <= 21; i++)
@@ -55,14 +52,10 @@ namespace EgeGenerator
                     _answerFiles1921[i] = "";
                 }
             }
-
-            InitializeUI();
-            UpdateVariantNumber();
         }
 
         private void InitializeUI()
         {
-            // Для заданий 19-21 - особый случай
             if (_taskNumber >= 19 && _taskNumber <= 21)
             {
                 InitializeUIFor1921();
@@ -75,26 +68,18 @@ namespace EgeGenerator
 
         private void InitializeUIFor1921()
         {
-            txtTitle.Text = $"Добавление заданий 19-21";
-
-            // Скрываем стандартные поля
+            txtTitle.Text = "Добавление заданий 19-21";
             borderTask.Visibility = Visibility.Collapsed;
             borderAnswer.Visibility = Visibility.Collapsed;
             borderExtraA.Visibility = Visibility.Collapsed;
             borderExtraB.Visibility = Visibility.Collapsed;
-
-            // Показываем поля для 19-21
             border1921.Visibility = Visibility.Visible;
-
-            // Обновляем статусы для каждого задания
             Update1921Status();
         }
 
         private void InitializeUIForRegularTask()
         {
             txtTitle.Text = $"Добавление варианта задания {_taskNumber}";
-
-            // Показываем нужные поля в зависимости от типа задания
             if (_tasksWithOneExtra.Contains(_taskNumber))
             {
                 borderExtraA.Visibility = Visibility.Visible;
@@ -114,18 +99,7 @@ namespace EgeGenerator
 
         private void UpdateVariantNumber()
         {
-            string taskFolderPath;
-
-            // Для заданий 19-21 используем папку 19-21
-            if (_taskNumber >= 19 && _taskNumber <= 21)
-            {
-                taskFolderPath = Path.Combine(_storagePath, PAPKA_1921);
-            }
-            else
-            {
-                taskFolderPath = Path.Combine(_storagePath, _taskNumber.ToString());
-            }
-
+            string taskFolderPath = GetTaskFolderPath();
             if (!Directory.Exists(taskFolderPath))
             {
                 VariantNumber = 1;
@@ -133,11 +107,22 @@ namespace EgeGenerator
                 return;
             }
 
-            // Находим минимальный пропущенный номер
-            string[] existingVariants = Directory.GetDirectories(taskFolderPath);
-            HashSet<int> existingNumbers = new HashSet<int>();
+            HashSet<int> existingNumbers = GetExistingVariantNumbers(taskFolderPath);
+            VariantNumber = FindAvailableVariantNumber(existingNumbers);
+            txtVariantInfo.Text = $"Будет создан вариант № {VariantNumber}";
+        }
 
-            foreach (string variant in existingVariants)
+        private string GetTaskFolderPath()
+        {
+            return _taskNumber >= 19 && _taskNumber <= 21
+                ? Path.Combine(_storagePath, PAPKA_1921)
+                : Path.Combine(_storagePath, _taskNumber.ToString());
+        }
+
+        private static HashSet<int> GetExistingVariantNumbers(string taskFolderPath)
+        {
+            var existingNumbers = new HashSet<int>();
+            foreach (string variant in Directory.GetDirectories(taskFolderPath))
             {
                 string folderName = Path.GetFileName(variant);
                 if (int.TryParse(folderName, out int num))
@@ -145,25 +130,23 @@ namespace EgeGenerator
                     existingNumbers.Add(num);
                 }
             }
+            return existingNumbers;
+        }
 
-            // Ищем минимальный пропущенный номер
+        private static int FindAvailableVariantNumber(HashSet<int> existingNumbers)
+        {
             for (int i = 1; i <= 1000; i++)
             {
                 if (!existingNumbers.Contains(i))
                 {
-                    VariantNumber = i;
-                    txtVariantInfo.Text = $"Будет создан вариант № {VariantNumber}";
-                    return;
+                    return i;
                 }
             }
-
-            VariantNumber = existingNumbers.Max() + 1;
-            txtVariantInfo.Text = $"Будет создан вариант № {VariantNumber}";
+            return existingNumbers.Max() + 1;
         }
 
         private void Update1921Status()
         {
-            // Обновляем статусы для заданий 19, 20, 21
             UpdateSingle1921Status(19);
             UpdateSingle1921Status(20);
             UpdateSingle1921Status(21);
@@ -171,69 +154,60 @@ namespace EgeGenerator
 
         private void UpdateSingle1921Status(int taskNum)
         {
-            TextBlock taskStatus = null;
-            TextBlock taskCheck = null;
-            TextBlock answerStatus = null;
-            TextBlock answerCheck = null;
-            TextBox answerTextBox = null;
+            var controls = GetControlsForTask(taskNum);
+            if (controls == null) return;
 
-            // Находим контролы для текущего задания
+            UpdateTaskStatus(controls.Item1, controls.Item2, _taskFiles1921[taskNum]);
+            UpdateAnswerStatus(controls.Item3, controls.Item4, controls.Item5, taskNum);
+        }
+
+        private Tuple<TextBlock, TextBlock, TextBlock, TextBlock, TextBox> GetControlsForTask(int taskNum)
+        {
             switch (taskNum)
             {
                 case 19:
-                    taskStatus = txtTask19Status;
-                    taskCheck = txtTask19Check;
-                    answerStatus = txtAnswer19Status;
-                    answerCheck = txtAnswer19Check;
-                    answerTextBox = txtAnswer19;
-                    break;
+                    return Tuple.Create<TextBlock, TextBlock, TextBlock, TextBlock, TextBox>(
+                        txtTask19Status, txtTask19Check, txtAnswer19Status, txtAnswer19Check, txtAnswer19);
                 case 20:
-                    taskStatus = txtTask20Status;
-                    taskCheck = txtTask20Check;
-                    answerStatus = txtAnswer20Status;
-                    answerCheck = txtAnswer20Check;
-                    answerTextBox = txtAnswer20;
-                    break;
+                    return Tuple.Create<TextBlock, TextBlock, TextBlock, TextBlock, TextBox>(
+                        txtTask20Status, txtTask20Check, txtAnswer20Status, txtAnswer20Check, txtAnswer20);
                 case 21:
-                    taskStatus = txtTask21Status;
-                    taskCheck = txtTask21Check;
-                    answerStatus = txtAnswer21Status;
-                    answerCheck = txtAnswer21Check;
-                    answerTextBox = txtAnswer21;
-                    break;
+                    return Tuple.Create<TextBlock, TextBlock, TextBlock, TextBlock, TextBox>(
+                        txtTask21Status, txtTask21Check, txtAnswer21Status, txtAnswer21Check, txtAnswer21);
+                default:
+                    return null;
             }
+        }
 
-            if (taskStatus == null) return;
-
-            // Обновляем статус задания
-            if (!string.IsNullOrEmpty(_taskFiles1921[taskNum]) && File.Exists(_taskFiles1921[taskNum]))
+        private void UpdateTaskStatus(TextBlock statusText, TextBlock checkText, string filePath)
+        {
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
             {
-                string fileName = Path.GetFileName(_taskFiles1921[taskNum]);
-                taskStatus.Text = fileName;
-                taskCheck.Text = "✓";
-                taskCheck.Foreground = System.Windows.Media.Brushes.Green;
-                taskCheck.Visibility = Visibility.Visible;
+                statusText.Text = Path.GetFileName(filePath);
+                checkText.Text = "✓";
+                checkText.Foreground = System.Windows.Media.Brushes.Green;
+                checkText.Visibility = Visibility.Visible;
             }
             else
             {
-                taskStatus.Text = $"Задание {taskNum} не загружено";
-                taskCheck.Text = "✗";
-                taskCheck.Foreground = System.Windows.Media.Brushes.Red;
-                taskCheck.Visibility = Visibility.Visible;
+                statusText.Text = "Задание не загружено";
+                checkText.Text = "✗";
+                checkText.Foreground = System.Windows.Media.Brushes.Red;
+                checkText.Visibility = Visibility.Visible;
             }
+        }
 
-            // Обновляем статус ответа (есть ли ответ вручную или из файла)
+        private void UpdateAnswerStatus(TextBlock statusText, TextBlock checkText, TextBox answerTextBox, int taskNum)
+        {
             bool hasAnswerFromFile = !string.IsNullOrEmpty(_answerFiles1921[taskNum]) && File.Exists(_answerFiles1921[taskNum]);
             bool hasAnswerFromText = !string.IsNullOrEmpty(_answerTexts1921[taskNum]) && _answerTexts1921[taskNum].Trim().Length > 0;
 
             if (hasAnswerFromFile)
             {
-                answerStatus.Text = "Ответ из файла";
-                answerCheck.Text = "✓";
-                answerCheck.Foreground = System.Windows.Media.Brushes.Green;
-                answerCheck.Visibility = Visibility.Visible;
-
-                // Загружаем текст из файла в TextBox
+                statusText.Text = "Ответ из файла";
+                checkText.Text = "✓";
+                checkText.Foreground = System.Windows.Media.Brushes.Green;
+                checkText.Visibility = Visibility.Visible;
                 if (answerTextBox != null)
                 {
                     string fileContent = File.ReadAllText(_answerFiles1921[taskNum]).Trim();
@@ -243,58 +217,32 @@ namespace EgeGenerator
             }
             else if (hasAnswerFromText)
             {
-                answerStatus.Text = "Ответ введен вручную";
-                answerCheck.Text = "✓";
-                answerCheck.Foreground = System.Windows.Media.Brushes.Green;
-                answerCheck.Visibility = Visibility.Visible;
+                statusText.Text = "Ответ введен вручную";
+                checkText.Text = "✓";
+                checkText.Foreground = System.Windows.Media.Brushes.Green;
+                checkText.Visibility = Visibility.Visible;
             }
             else
             {
-                answerStatus.Text = $"Ответ {taskNum} не загружен";
-                answerCheck.Text = "✗";
-                answerCheck.Foreground = System.Windows.Media.Brushes.Red;
-                answerCheck.Visibility = Visibility.Visible;
+                statusText.Text = "Ответ не загружен";
+                checkText.Text = "✗";
+                checkText.Foreground = System.Windows.Media.Brushes.Red;
+                checkText.Visibility = Visibility.Visible;
             }
 
-            // Обновляем TextBox если нужно
             if (answerTextBox != null && hasAnswerFromText)
             {
                 answerTextBox.Text = _answerTexts1921[taskNum];
             }
         }
 
-        // Обработчики для заданий 19-21
-        private void BtnBrowseTask19_Click(object sender, RoutedEventArgs e)
-        {
-            LoadTaskFor1921(19);
-        }
+        private void BtnBrowseTask19_Click(object sender, RoutedEventArgs e) => LoadTaskFor1921(19);
+        private void BtnBrowseTask20_Click(object sender, RoutedEventArgs e) => LoadTaskFor1921(20);
+        private void BtnBrowseTask21_Click(object sender, RoutedEventArgs e) => LoadTaskFor1921(21);
+        private void BtnBrowseAnswer19_Click(object sender, RoutedEventArgs e) => LoadAnswerFor1921(19);
+        private void BtnBrowseAnswer20_Click(object sender, RoutedEventArgs e) => LoadAnswerFor1921(20);
+        private void BtnBrowseAnswer21_Click(object sender, RoutedEventArgs e) => LoadAnswerFor1921(21);
 
-        private void BtnBrowseTask20_Click(object sender, RoutedEventArgs e)
-        {
-            LoadTaskFor1921(20);
-        }
-
-        private void BtnBrowseTask21_Click(object sender, RoutedEventArgs e)
-        {
-            LoadTaskFor1921(21);
-        }
-
-        private void BtnBrowseAnswer19_Click(object sender, RoutedEventArgs e)
-        {
-            LoadAnswerFor1921(19);
-        }
-
-        private void BtnBrowseAnswer20_Click(object sender, RoutedEventArgs e)
-        {
-            LoadAnswerFor1921(20);
-        }
-
-        private void BtnBrowseAnswer21_Click(object sender, RoutedEventArgs e)
-        {
-            LoadAnswerFor1921(21);
-        }
-
-        // Обработчики изменения текста в TextBox
         private void TxtAnswer19_TextChanged(object sender, TextChangedEventArgs e)
         {
             _answerTexts1921[19] = txtAnswer19.Text;
@@ -315,9 +263,11 @@ namespace EgeGenerator
 
         private void LoadTaskFor1921(int taskNum)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Изображения|*.png;*.jpg;*.jpeg";
-            dialog.Title = $"Выберите файл задания {taskNum}";
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Изображения|*.png;*.jpg;*.jpeg",
+                Title = $"Выберите файл задания {taskNum}"
+            };
 
             if (dialog.ShowDialog() == true)
             {
@@ -336,13 +286,14 @@ namespace EgeGenerator
 
         private void LoadAnswerFor1921(int taskNum)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Текстовые файлы|*.txt";
-            dialog.Title = $"Выберите файл с ответом для задания {taskNum}";
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Текстовые файлы|*.txt",
+                Title = $"Выберите файл с ответом для задания {taskNum}"
+            };
 
             if (dialog.ShowDialog() == true)
             {
-                // Проверяем что файл не пустой
                 string content = File.ReadAllText(dialog.FileName).Trim();
                 if (string.IsNullOrEmpty(content))
                 {
@@ -352,17 +303,18 @@ namespace EgeGenerator
                 }
 
                 _answerFiles1921[taskNum] = dialog.FileName;
-                _answerTexts1921[taskNum] = content; // Сохраняем текст для отображения
+                _answerTexts1921[taskNum] = content;
                 UpdateSingle1921Status(taskNum);
             }
         }
 
-        // Старые методы для обычных заданий
         private void BtnBrowseTask_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Изображения|*.png;*.jpg;*.jpeg";
-            dialog.Title = "Выберите файл задания";
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Изображения|*.png;*.jpg;*.jpeg",
+                Title = "Выберите файл задания"
+            };
 
             if (dialog.ShowDialog() == true)
             {
@@ -373,14 +325,15 @@ namespace EgeGenerator
 
         private void BtnBrowseAnswer_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Текстовые файлы|*.txt";
-            dialog.Title = "Выберите файл с ответом";
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Текстовые файлы|*.txt",
+                Title = "Выберите файл с ответом"
+            };
 
             if (dialog.ShowDialog() == true)
             {
                 _answerFilePath = dialog.FileName;
-                // Проверяем что файл не пустой
                 string content = File.ReadAllText(_answerFilePath).Trim();
                 if (string.IsNullOrEmpty(content))
                 {
@@ -390,7 +343,6 @@ namespace EgeGenerator
                 }
                 else
                 {
-                    // Копируем содержимое в текстовое поле
                     txtAnswer.Text = content;
                 }
             }
@@ -398,43 +350,33 @@ namespace EgeGenerator
 
         private void BtnBrowseExtraA_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Дополнительные файлы|*.txt;*.ods;*.xlsx;*.xls;*.pdf;*.doc;*.docx";
-            dialog.Title = "Выберите дополнительный материал A";
-
-            if (dialog.ShowDialog() == true)
-            {
-                string extension = Path.GetExtension(dialog.FileName).ToLower();
-                if (_allowedExtraExtensions.Contains(extension))
-                {
-                    _extraAFilePath = dialog.FileName;
-                    UpdateFileStatus(txtExtraAFile, txtExtraACheck, _extraAFilePath,
-                        _tasksWithOneExtra.Contains(_taskNumber) || _tasksWithTwoExtra.Contains(_taskNumber),
-                        _allowedExtraExtensions);
-                }
-                else
-                {
-                    MessageBox.Show($"Недопустимый формат файла. Разрешенные форматы: {string.Join(", ", _allowedExtraExtensions)}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
+            LoadExtraMaterial("Выберите дополнительный материал A", ref _extraAFilePath,
+                txtExtraAFile, txtExtraACheck,
+                _tasksWithOneExtra.Contains(_taskNumber) || _tasksWithTwoExtra.Contains(_taskNumber));
         }
 
         private void BtnBrowseExtraB_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Дополнительные файлы|*.txt;*.ods;*.xlsx;*.xls;*.pdf;*.doc;*.docx";
-            dialog.Title = "Выберите дополнительный материал B";
+            LoadExtraMaterial("Выберите дополнительный материал B", ref _extraBFilePath,
+                txtExtraBFile, txtExtraBCheck,
+                _tasksWithTwoExtra.Contains(_taskNumber));
+        }
+
+        private void LoadExtraMaterial(string title, ref string filePath, TextBlock statusText, TextBlock checkText, bool required)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Дополнительные файлы|*.txt;*.ods;*.xlsx;*.xls;*.pdf;*.doc;*.docx",
+                Title = title
+            };
 
             if (dialog.ShowDialog() == true)
             {
                 string extension = Path.GetExtension(dialog.FileName).ToLower();
                 if (_allowedExtraExtensions.Contains(extension))
                 {
-                    _extraBFilePath = dialog.FileName;
-                    UpdateFileStatus(txtExtraBFile, txtExtraBCheck, _extraBFilePath,
-                        _tasksWithTwoExtra.Contains(_taskNumber),
-                        _allowedExtraExtensions);
+                    filePath = dialog.FileName;
+                    UpdateFileStatus(statusText, checkText, filePath, required, _allowedExtraExtensions);
                 }
                 else
                 {
@@ -446,23 +388,15 @@ namespace EgeGenerator
 
         private bool ValidateInput()
         {
-            // Для заданий 19-21 особая проверка
-            if (_taskNumber >= 19 && _taskNumber <= 21)
-            {
-                return ValidateInputFor1921();
-            }
-            else
-            {
-                return ValidateInputForRegularTask();
-            }
+            return _taskNumber >= 19 && _taskNumber <= 21
+                ? ValidateInputFor1921()
+                : ValidateInputForRegularTask();
         }
 
         private bool ValidateInputFor1921()
         {
-            // Проверяем все 3 задания
             for (int taskNum = 19; taskNum <= 21; taskNum++)
             {
-                // Проверяем задание
                 if (string.IsNullOrEmpty(_taskFiles1921[taskNum]) || !File.Exists(_taskFiles1921[taskNum]))
                 {
                     MessageBox.Show($"Загрузите файл задания {taskNum} (png или jpg)",
@@ -478,7 +412,6 @@ namespace EgeGenerator
                     return false;
                 }
 
-                // Проверяем ответ (может быть из файла или вручную)
                 bool hasAnswerFromFile = !string.IsNullOrEmpty(_answerFiles1921[taskNum]) && File.Exists(_answerFiles1921[taskNum]);
                 bool hasAnswerFromText = !string.IsNullOrEmpty(_answerTexts1921[taskNum]) && _answerTexts1921[taskNum].Trim().Length > 0;
 
@@ -489,7 +422,6 @@ namespace EgeGenerator
                     return false;
                 }
 
-                // Если ответ из файла, проверяем что он не пустой
                 if (hasAnswerFromFile)
                 {
                     string content = File.ReadAllText(_answerFiles1921[taskNum]).Trim();
@@ -507,7 +439,6 @@ namespace EgeGenerator
 
         private bool ValidateInputForRegularTask()
         {
-            // Старая проверка
             if (string.IsNullOrEmpty(_taskFilePath))
             {
                 MessageBox.Show("Загрузите файл задания (png или jpg)",
@@ -523,7 +454,6 @@ namespace EgeGenerator
                 return false;
             }
 
-            // Проверяем ответ
             string answerText = txtAnswer.Text.Trim();
             if (string.IsNullOrEmpty(answerText))
             {
@@ -532,7 +462,6 @@ namespace EgeGenerator
                 return false;
             }
 
-            // Проверяем доп. материал A если требуется
             if ((_tasksWithOneExtra.Contains(_taskNumber) || _tasksWithTwoExtra.Contains(_taskNumber))
                 && string.IsNullOrEmpty(_extraAFilePath))
             {
@@ -541,7 +470,6 @@ namespace EgeGenerator
                 return false;
             }
 
-            // Проверяем доп. материал B если требуется
             if (_tasksWithTwoExtra.Contains(_taskNumber) && string.IsNullOrEmpty(_extraBFilePath))
             {
                 MessageBox.Show("Загрузите дополнительный материал B",
@@ -559,7 +487,6 @@ namespace EgeGenerator
 
             try
             {
-                // Для заданий 19-21 - особый случай
                 if (_taskNumber >= 19 && _taskNumber <= 21)
                 {
                     SaveTask1921();
@@ -580,32 +507,23 @@ namespace EgeGenerator
 
         private void SaveTask1921()
         {
-            // Создаем папку 19-21 если её нет
             string task1921FolderPath = Path.Combine(_storagePath, PAPKA_1921);
-            if (!Directory.Exists(task1921FolderPath))
-            {
-                Directory.CreateDirectory(task1921FolderPath);
-            }
+            Directory.CreateDirectory(task1921FolderPath);
 
-            // Создаем папку варианта
             string variantFolderPath = Path.Combine(task1921FolderPath, VariantNumber.ToString());
             Directory.CreateDirectory(variantFolderPath);
 
-            // Создаем все 3 папки заданий внутри варианта и сохраняем файлы
             for (int taskNum = 19; taskNum <= 21; taskNum++)
             {
                 string taskFolderPath = Path.Combine(variantFolderPath, taskNum.ToString());
                 Directory.CreateDirectory(taskFolderPath);
 
-                // Копируем файл задания с переименованием
                 string taskDestPath = Path.Combine(taskFolderPath, "task" + Path.GetExtension(_taskFiles1921[taskNum]));
                 File.Copy(_taskFiles1921[taskNum], taskDestPath, true);
 
-                // Сохраняем ответ (из файла или ручного ввода)
                 string answerText = _answerTexts1921[taskNum];
                 if (string.IsNullOrEmpty(answerText) && !string.IsNullOrEmpty(_answerFiles1921[taskNum]))
                 {
-                    // Если текст пустой, но есть файл, читаем из файла
                     answerText = File.ReadAllText(_answerFiles1921[taskNum]).Trim();
                 }
 
@@ -619,33 +537,24 @@ namespace EgeGenerator
 
         private void SaveRegularTask()
         {
-            // Создаем папку задания если её нет
             string taskFolderPath = Path.Combine(_storagePath, _taskNumber.ToString());
-            if (!Directory.Exists(taskFolderPath))
-            {
-                Directory.CreateDirectory(taskFolderPath);
-            }
+            Directory.CreateDirectory(taskFolderPath);
 
-            // Создаем папку варианта
             string variantFolderPath = Path.Combine(taskFolderPath, VariantNumber.ToString());
             Directory.CreateDirectory(variantFolderPath);
 
-            // Копируем файл задания с переименованием
             string taskDestPath = Path.Combine(variantFolderPath, "task" + Path.GetExtension(_taskFilePath));
             File.Copy(_taskFilePath, taskDestPath, true);
 
-            // Сохраняем ответ
             string answerDestPath = Path.Combine(variantFolderPath, "answer.txt");
             File.WriteAllText(answerDestPath, txtAnswer.Text.Trim());
 
-            // Копируем доп. материал A если есть
             if (!string.IsNullOrEmpty(_extraAFilePath))
             {
                 string extraADestPath = Path.Combine(variantFolderPath, "A" + Path.GetExtension(_extraAFilePath));
                 File.Copy(_extraAFilePath, extraADestPath, true);
             }
 
-            // Копируем доп. материал B если есть
             if (!string.IsNullOrEmpty(_extraBFilePath))
             {
                 string extraBDestPath = Path.Combine(variantFolderPath, "B" + Path.GetExtension(_extraBFilePath));
@@ -658,10 +567,7 @@ namespace EgeGenerator
         {
             if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
             {
-                string fileName = Path.GetFileName(filePath);
-                statusText.Text = fileName;
-
-                // Проверяем расширение если нужно
+                statusText.Text = Path.GetFileName(filePath);
                 if (allowedExtensions != null)
                 {
                     string extension = Path.GetExtension(filePath).ToLower();
@@ -688,7 +594,6 @@ namespace EgeGenerator
             else
             {
                 statusText.Text = "Не загружено";
-
                 if (required)
                 {
                     checkText.Text = "✗";
