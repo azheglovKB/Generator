@@ -2,17 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Добавление задания с доп. материалом" 
-        Height="750" 
-        Width="600"
-        MinHeight="750"
-        MinWidth="500"
+        WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
             <!-- Заголовок -->
-            <TextBlock Text="Добавление задания с доп. материалом" 
+            <TextBlock x:Name="txtZagolovok" 
+                       Text="Добавление задания с доп. материалом" 
                        FontSize="18" 
                        FontWeight="Bold"
                        HorizontalAlignment="Center"

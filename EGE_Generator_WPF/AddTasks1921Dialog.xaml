@@ -2,17 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Добавление заданий 19-21" 
-        Height="1050" 
-        Width="700"
-        MinHeight="1050"
-        MinWidth="600"
+        WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
             <!-- Заголовок -->
-            <TextBlock Text="Добавление заданий 19-21" 
+            <TextBlock x:Name="txtZagolovok" 
+                       Text="Добавление заданий 19-21" 
                        FontSize="18" 
                        FontWeight="Bold"
                        HorizontalAlignment="Center"

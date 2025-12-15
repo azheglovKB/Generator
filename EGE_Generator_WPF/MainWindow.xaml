@@ -2,8 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Генератор вариантов ЕГЭ" 
-        Height="392" 
-        Width="730"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
