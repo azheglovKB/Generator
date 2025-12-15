@@ -56,16 +56,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddVariantDialog.xaml.cs">
-      <DependentUpon>AddVariantDialog.xaml</DependentUpon>
+    <Compile Include="AddSimpleTaskDialog.xaml.cs">
+      <DependentUpon>AddSimpleTaskDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddTasks1921Dialog.xaml.cs">
+      <DependentUpon>AddTasks1921Dialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddTaskWithOneExtraDialog.xaml.cs">
+      <DependentUpon>AddTaskWithOneExtraDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddTaskWithTwoExtrasDialog.xaml.cs">
+      <DependentUpon>AddTaskWithTwoExtrasDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileService.cs" />
+    <Compile Include="StorageService.cs" />
     <Compile Include="TaskNumberDialog.xaml.cs">
       <DependentUpon>TaskNumberDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValidationService.cs" />
     <Compile Include="ViewTaskWindow.xaml.cs">
       <DependentUpon>ViewTaskWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="AddVariantDialog.xaml">
+    <Page Include="AddSimpleTaskDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTasks1921Dialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTaskWithOneExtraDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTaskWithTwoExtrasDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

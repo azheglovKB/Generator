@@ -1,0 +1,154 @@
+﻿<Window x:Class="EgeGenerator.AddTaskWithTwoExtrasDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавление задания с двумя доп. материалами" 
+        Height="850" 
+        Width="600"
+        MinHeight="850"
+        MinWidth="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <!-- Заголовок -->
+            <TextBlock Text="Добавление задания с двумя доп. материалами" 
+                       FontSize="18" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- Задание -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="Задание (png или jpg):" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnZagruzitZadanie" 
+                                Content="Загрузить задание" 
+                                Width="150" Height="30" 
+                                Click="BtnZagruzitZadanie_Click"
+                                Margin="0,0,10,0"/>
+                        <TextBlock x:Name="txtStatusZadaniya" 
+                                   Text="Не загружено" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="#666666"/>
+                        <TextBlock x:Name="txtProverkaZadaniya" 
+                                   Text="✗" 
+                                   Foreground="Red" 
+                                   FontWeight="Bold" 
+                                   Margin="10,0,0,0" 
+                                   VerticalAlignment="Center" 
+                                   Visibility="Collapsed"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Ответ -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="Ответ:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button x:Name="btnZagruzitOtvet" 
+                                Content="Загрузить ответ (txt)" 
+                                Width="150" Height="30" 
+                                Click="BtnZagruzitOtvet_Click"
+                                Margin="0,0,10,0"/>
+                        <TextBlock Text="или введите вручную:" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBox x:Name="txtOtvet" 
+                             Height="80" 
+                             TextWrapping="Wrap" 
+                             AcceptsReturn="True" 
+                             VerticalScrollBarVisibility="Auto"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Дополнительный материал A -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="Дополнительный материал A:" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnZagruzitDopMaterialA" 
+                                Content="Загрузить доп. материал A" 
+                                Width="150" Height="30" 
+                                Click="BtnZagruzitDopMaterialA_Click"
+                                Margin="0,0,10,0"/>
+                        <TextBlock x:Name="txtStatusDopMaterialA" 
+                                   Text="Не загружено" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="#666666"/>
+                        <TextBlock x:Name="txtProverkaDopMaterialA" 
+                                   Text="✗" 
+                                   Foreground="Red" 
+                                   FontWeight="Bold" 
+                                   Margin="10,0,0,0" 
+                                   VerticalAlignment="Center" 
+                                   Visibility="Collapsed"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Дополнительный материал B -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="Дополнительный материал B:" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnZagruzitDopMaterialB" 
+                                Content="Загрузить доп. материал B" 
+                                Width="150" Height="30" 
+                                Click="BtnZagruzitDopMaterialB_Click"
+                                Margin="0,0,10,0"/>
+                        <TextBlock x:Name="txtStatusDopMaterialB" 
+                                   Text="Не загружено" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="#666666"/>
+                        <TextBlock x:Name="txtProverkaDopMaterialB" 
+                                   Text="✗" 
+                                   Foreground="Red" 
+                                   FontWeight="Bold" 
+                                   Margin="10,0,0,0" 
+                                   VerticalAlignment="Center" 
+                                   Visibility="Collapsed"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Информация о варианте -->
+            <Border Background="#E3F2FD" 
+                    BorderBrush="#90CAF9" 
+                    BorderThickness="1" 
+                    Padding="10" 
+                    Margin="0,0,0,10">
+                <TextBlock x:Name="txtInformatsiyaOVariante" 
+                           Text="Будет создан вариант № ?" 
+                           FontWeight="SemiBold"/>
+            </Border>
+
+            <!-- Кнопки -->
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,20,0,0">
+                <Button Content="Сохранить" 
+                        Width="100" 
+                        Height="35"
+                        Background="#4CAF50" 
+                        Foreground="White"
+                        FontWeight="Bold" 
+                        IsDefault="True"
+                        Click="BtnSohranit_Click"/>
+                <Button Content="Отмена" 
+                        Width="100" 
+                        Height="35"
+                        Background="#F44336" 
+                        Foreground="White"
+                        FontWeight="Bold" 
+                        Margin="10,0,0,0"
+                        IsCancel="True"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
