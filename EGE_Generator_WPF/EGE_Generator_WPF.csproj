@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -59,9 +59,11 @@
     <Compile Include="AddVariantDialog.xaml.cs">
       <DependentUpon>AddVariantDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Task.cs" />
     <Compile Include="TaskNumberDialog.xaml.cs">
       <DependentUpon>TaskNumberDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Variant.cs" />
     <Page Include="AddVariantDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
