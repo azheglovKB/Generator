@@ -2,7 +2,7 @@
         Icon="icon.jpg"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Добавление заданий 19-21" 
+        Title="Добавление зпданий 19-21" 
         WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize">
