@@ -11,7 +11,7 @@
         <StackPanel Margin="20">
 
             <TextBlock x:Name="txtZagolovok" 
-                       Text="Добавление зпданий 19-21" 
+                       Text="Добавление заданий 19-21" 
                        FontSize="18" 
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
